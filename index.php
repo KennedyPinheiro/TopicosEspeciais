@@ -59,6 +59,22 @@ switch ($clean_path) {
         require 'src/pages/produtos/index.php';
         break;
 
+    case 'produtos/cadastroProdutos':
+        if (!isset($_COOKIE['nome_usuario'])) {
+            header('Location: /login');
+            exit;
+        }
+        require 'src/pages/produtos/cadastroProdutos.php';
+        break;
+
+    case 'processa_produto':
+        if (!isset($_COOKIE['nome_usuario'])) {
+            header('Location: /login');
+            exit;
+        }
+        require 'src/backend/processa_produto.php';
+        break;
+
     case 'sobre':
         if (!isset($_COOKIE['nome_usuario'])) {
             header('Location: /login');
