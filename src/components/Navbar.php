@@ -4,150 +4,141 @@ $currentPage = $currentPage ?? 'home';
 
 <nav class="custom-navbar">
     <div class="nav-brand">
-        <a href="/home">
+        <a href="/home" class="brand-link">
             <div class="logo-container">
                 <img src="/assets/img/logo_IF2.png" alt="Logo IF" class="logo" />
             </div>
+            <span class="brand-text">Sistema IF</span>
         </a>
     </div>
+    
     <button class="nav-toggle" aria-controls="nav-menu" aria-expanded="false" aria-label="Abrir menu">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
     </button>
+    
     <ul class="nav-menu" id="nav-menu">
-        <li><a href="/home" class="<?php echo $currentPage === 'home' ? 'nav-active' : ''; ?>">Home</a></li>
-        <li><a href="/produtos" class="<?php echo $currentPage === 'produtos' ? 'nav-active' : ''; ?>">Produtos</a></li>
+        <li>
+            <a href="/home" class="nav-link <?php echo $currentPage === 'home' ? 'nav-active' : ''; ?>">
+                <span class="iconify" data-icon="mdi:home" data-width="18" data-height="18"></span>
+                <span>Home</span>
+            </a>
+        </li>
+        
+        <li>
+            <a href="/produtos" class="nav-link <?php echo $currentPage === 'produtos' ? 'nav-active' : ''; ?>">
+                <span class="iconify" data-icon="mdi:package-variant" data-width="18" data-height="18"></span>
+                <span>Produtos</span>
+            </a>
+        </li>
 
+        <!-- Dropdown para Desktop -->
         <li class="profile-dropdown desktop-only">
             <div class="profile-btn">
-                <span>Perfil</span>
-                <div class="dropdown-content">
-                    <a href="/perfil" class="<?php echo $currentPage === 'perfil' ? 'dropdown-active' : ''; ?>">Meu Perfil</a>
-                    <a href="/sobre" class="<?php echo $currentPage === 'sobre' ? 'nav-active' : ''; ?>">Sobre</a>
-                    <a href="/logout" class="logout-btn">Sair</a>
+                <div class="profile-avatar">
+                    <span class="iconify" data-icon="mdi:account-circle" data-width="24" data-height="24"></span>
                 </div>
+                <span class="profile-name"><?php echo htmlspecialchars(explode(' ', $nome_usuario)[0]); ?></span>
+                <span class="dropdown-arrow">
+                    <span class="iconify" data-icon="mdi:chevron-down" data-width="16" data-height="16"></span>
+                </span>
+            </div>
+            <div class="dropdown-content">
+                <div class="dropdown-header">
+                    <span class="user-fullname"><?php echo htmlspecialchars($nome_usuario); ?></span>
+                    <span class="user-role">Administrador</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="/perfil" class="dropdown-item <?php echo $currentPage === 'perfil' ? 'dropdown-active' : ''; ?>">
+                    <span class="iconify" data-icon="mdi:account-cog" data-width="18" data-height="18"></span>
+                    Meu Perfil
+                </a>
+                <a href="/sobre" class="dropdown-item <?php echo $currentPage === 'sobre' ? 'dropdown-active' : ''; ?>">
+                    <span class="iconify" data-icon="mdi:information" data-width="18" data-height="18"></span>
+                    Sobre o Sistema
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="/logout" class="dropdown-item logout-btn">
+                    <span class="iconify" data-icon="mdi:logout" data-width="18" data-height="18"></span>
+                    Sair do Sistema
+                </a>
             </div>
         </li>
 
-        <li class="mobile-only"><a href="/perfil" class="<?php echo $currentPage === 'perfil' ? 'nav-active' : ''; ?>">Perfil</a></li>
-        <li class="mobile-only"><a href="/sobre" class="<?php echo $currentPage === 'sobre' ? 'nav-active' : ''; ?>">Sobre</a></li>
-        <li class="mobile-only"><a href="/logout" class="logout-btn">Sair</a></li>
+        <!-- Links para Mobile -->
+        <li class="mobile-only">
+            <a href="/perfil" class="nav-link <?php echo $currentPage === 'perfil' ? 'nav-active' : ''; ?>">
+                <span class="iconify" data-icon="mdi:account-cog" data-width="18" data-height="18"></span>
+                Meu Perfil
+            </a>
+        </li>
+        <li class="mobile-only">
+            <a href="/sobre" class="nav-link <?php echo $currentPage === 'sobre' ? 'nav-active' : ''; ?>">
+                <span class="iconify" data-icon="mdi:information" data-width="18" data-height="18"></span>
+                Sobre
+            </a>
+        </li>
+        <li class="mobile-only">
+            <a href="/logout" class="nav-link logout-btn">
+                <span class="iconify" data-icon="mdi:logout" data-width="18" data-height="18"></span>
+                Sair
+            </a>
+        </li>
     </ul>
 </nav>
 
 <style>
-    .profile-dropdown {
-        position: relative;
-    }
-
-    .profile-btn {
-        cursor: pointer;
-        padding: 0.5rem 0.8rem;
-        background: transparent;
-        border: none;
-        color: rgba(255, 255, 255, 0.92);
-        font-family: inherit;
-        font-size: 0.95rem;
-        border-radius: 6px;
-        transition: background .18s, color .18s, transform .08s;
-    }
-
-    .profile-btn:hover {
-        background: rgba(255, 255, 255, 0.06);
-        transform: translateY(-1px);
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
-        min-width: 160px;
-        box-shadow: 0 8px 16px rgba(2, 6, 23, 0.3);
-        z-index: 1002;
-        border-radius: 6px;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .dropdown-content a {
-        color: rgba(255, 255, 255, 0.92);
-        padding: 0.75rem 1rem;
-        text-decoration: none;
-        display: block;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 0.9rem;
-        transition: background .18s, color .18s;
-    }
-
-    .dropdown-content a:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-    }
-
-    .dropdown-content a:last-child {
-        border-bottom: none;
-    }
-
-    .dropdown-content a.dropdown-active {
-        background: rgba(255, 255, 255, 0.15);
-        color: #fff;
-        font-weight: 600;
-    }
-
-    .profile-dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .profile-dropdown:hover .profile-btn {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-    }
-
-    .logout-btn {
-        color: #fca5a5 !important;
-    }
-
-    .logout-btn:hover {
-        background: rgba(239, 68, 68, 0.2) !important;
-        color: #fff !important;
-    }
-
     .custom-navbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;
-        padding: 0.6rem 1rem;
-        background: linear-gradient(90deg, #0f172a, #1e293b);
-        color: #fff;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        position: relative;
-        box-shadow: 0 2px 6px rgba(2, 6, 23, 0.2);
+        gap: 2rem;
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+        color: var(--text-light);
+        position: sticky;
+        top: 0;
+        box-shadow: var(--shadow-dark);
         width: 100%;
         z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+
+    .brand-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.25rem;
+        letter-spacing: -0.025em;
+        transition: opacity 0.2s ease;
+    }
+
+    .brand-link:hover {
+        opacity: 0.9;
+        color: var(--text-light);
+    }
+
+    .brand-text {
+        background: linear-gradient(135deg, #60a5fa, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
     }
 
     .logo-container {
-        text-align: center;
+        display: flex;
+        align-items: center;
     }
 
     .logo {
-        max-width: 50px;
-        height: auto;
-    }
-
-    .nav-brand a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 1.05rem;
-        letter-spacing: .2px;
-        display: flex;
-        align-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
     }
 
     .nav-menu {
@@ -159,54 +150,185 @@ $currentPage = $currentPage ?? 'home';
         align-items: center;
     }
 
-    .nav-menu li {
-        width: auto;
-    }
-
-    .nav-menu li a {
-        display: block;
-        padding: 0.5rem 0.8rem;
-        color: rgba(255, 255, 255, 0.92);
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        color: var(--text-muted);
         text-decoration: none;
-        border-radius: 6px;
-        transition: background .18s, color .18s, transform .08s;
-        font-size: .95rem;
-        border: none;
-        background: none;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        font-size: 0.95rem;
+        border: 1px solid transparent;
     }
 
-    .nav-menu li a.nav-active {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
+    .nav-link:hover,
+    .nav-link:focus {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-light);
+        border-color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .nav-link.nav-active {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--text-light);
+        border-color: rgba(59, 130, 246, 0.3);
         font-weight: 600;
     }
 
-    .nav-menu li a:hover,
-    .nav-menu li a:focus {
-        background: rgba(255, 255, 255, 0.06);
-        color: #fff;
-        transform: translateY(-1px);
-        text-decoration: none;
+    /* Profile Dropdown Styles */
+    .profile-dropdown {
+        position: relative;
     }
 
+    .profile-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        padding: 0.6rem 1rem;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .profile-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .profile-avatar {
+        display: flex;
+        align-items: center;
+        color: var(--accent-color);
+    }
+
+    .profile-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .dropdown-arrow {
+        transition: transform 0.2s ease;
+        color: var(--text-muted);
+    }
+
+    .profile-dropdown:hover .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: rgba(15, 23, 42, 0.98);
+        backdrop-filter: blur(20px);
+        min-width: 240px;
+        box-shadow: var(--shadow-dark);
+        z-index: 1002;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 0.5rem;
+    }
+
+    .profile-dropdown:hover .dropdown-content {
+        display: block;
+        animation: fadeInUp 0.2s ease;
+    }
+
+    .dropdown-header {
+        padding: 1.25rem 1.25rem 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-fullname {
+        display: block;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-light);
+    }
+
+    .user-role {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .dropdown-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 0.5rem 0;
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.25rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+    }
+
+    .dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-light);
+    }
+
+    .dropdown-item.dropdown-active {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--accent-color);
+        font-weight: 500;
+    }
+
+    .dropdown-item.logout-btn {
+        color: #f87171;
+    }
+
+    .dropdown-item.logout-btn:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: #fff;
+    }
+
+    /* Mobile Styles */
     .nav-toggle {
         display: none;
         background: transparent;
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         gap: 4px;
-        padding: 6px;
+        padding: 8px;
         flex-direction: column;
         cursor: pointer;
         align-items: center;
         justify-content: center;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .nav-toggle .bar {
         display: block;
-        width: 22px;
+        width: 20px;
         height: 2px;
-        background: #fff;
-        margin: 3px 0;
+        background: var(--text-light);
         border-radius: 2px;
         transition: 0.3s;
     }
@@ -216,6 +338,15 @@ $currentPage = $currentPage ?? 'home';
     }
 
     @media (max-width: 768px) {
+        .custom-navbar {
+            padding: 0.75rem 1rem;
+            gap: 1rem;
+        }
+
+        .brand-text {
+            display: none;
+        }
+
         .nav-toggle {
             display: flex;
         }
@@ -224,31 +355,28 @@ $currentPage = $currentPage ?? 'home';
             position: absolute;
             top: 100%;
             right: 1rem;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(20px);
             display: none;
             flex-direction: column;
-            align-items: flex-start;
-            padding: 0.6rem;
+            align-items: stretch;
+            padding: 0.75rem;
             gap: 0.25rem;
-            border-radius: 8px;
-            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.35);
-            min-width: 160px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-dark);
+            min-width: 200px;
             z-index: 1001;
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-menu.open {
             display: flex;
+            animation: fadeInUp 0.2s ease;
         }
 
-        .nav-menu li {
-            width: 100%;
-        }
-
-        .nav-menu li a {
-            display: block;
-            width: 100%;
-            padding: 0.6rem 0.9rem;
+        .nav-link {
+            justify-content: flex-start;
+            padding: 0.75rem 1rem;
         }
 
         .desktop-only {
@@ -256,16 +384,18 @@ $currentPage = $currentPage ?? 'home';
         }
 
         .mobile-only {
-            display: block !important;
+            display: flex !important;
         }
+    }
 
-        .nav-menu li a.logout-btn {
-            color: #fca5a5;
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
         }
-
-        .nav-menu li a.logout-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fff;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 </style>

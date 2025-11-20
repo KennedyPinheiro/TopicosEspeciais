@@ -59,12 +59,28 @@ switch ($clean_path) {
         require 'src/pages/produtos/index.php';
         break;
 
-    case 'produtos/cadastroProdutos':
+    case 'produtos/adicionar':
         if (!isset($_COOKIE['nome_usuario'])) {
             header('Location: /login');
             exit;
         }
-        require 'src/pages/produtos/cadastroProdutos.php';
+        require 'src/pages/produtos/adicionar.php';
+        break;
+
+    case 'produtos/visualizar':
+        if (!isset($_COOKIE['nome_usuario'])) {
+            header('Location: /login');
+            exit;
+        }
+        require 'src/pages/produtos/adicionar.php';
+        break;
+
+    case 'produtos/editar':
+        if (!isset($_COOKIE['nome_usuario'])) {
+            header('Location: /login');
+            exit;
+        }
+        require 'src/pages/produtos/adicionar.php';
         break;
 
     case 'processa_produto':
@@ -73,6 +89,21 @@ switch ($clean_path) {
             exit;
         }
         require 'src/backend/processa_produto.php';
+        break;
+    case 'processa_edicao_produto':
+        if (!isset($_COOKIE['nome_usuario'])) {
+            header('Location: /login');
+            exit;
+        }
+        require 'src/backend/processa_edicao_produto.php';
+        break;
+
+    case 'produtos/excluir':
+        if (!isset($_COOKIE['nome_usuario'])) {
+            header('Location: /login');
+            exit;
+        }
+        require 'src/backend/processa_exclusao_produto.php';
         break;
 
     case 'sobre':
