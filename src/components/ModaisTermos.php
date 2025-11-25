@@ -1,9 +1,9 @@
 <?php
-/**
- * Componente Modais para Termos de Uso e Política de Privacidade
- */
-function ModaisTermos() {
-    return '
+function ModaisTermos()
+{
+    ob_start();
+?>
+
     <div class="modal fade" id="termosUsoModal" tabindex="-1" aria-labelledby="termosUsoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -25,7 +25,7 @@ function ModaisTermos() {
                         <div class="terms-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">1. Aceitação dos Termos</h6>
                             <p class="text-justify">
-                                Ao acessar e utilizar o Sistema IF, você concorda em cumprir e estar vinculado aos seguintes 
+                                Ao acessar e utilizar o Sistema IF, você concorda em cumprir e estar vinculado aos seguintes
                                 termos e condições de uso. Estes termos regem o uso do sistema e todos os serviços relacionados.
                             </p>
                         </div>
@@ -33,7 +33,7 @@ function ModaisTermos() {
                         <div class="terms-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">2. Uso Adequado do Sistema</h6>
                             <p class="text-justify">
-                                O usuário concorda em utilizar o sistema apenas para fins legais e de acordo com as políticas 
+                                O usuário concorda em utilizar o sistema apenas para fins legais e de acordo com as políticas
                                 institucionais. É expressamente proibido:
                             </p>
                             <ul class="list-disc ms-4">
@@ -61,7 +61,7 @@ function ModaisTermos() {
                         <div class="terms-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">4. Propriedade Intelectual</h6>
                             <p class="text-justify">
-                                Todo o conteúdo, funcionalidades e tecnologia do Sistema IF são de propriedade do Instituto Federal 
+                                Todo o conteúdo, funcionalidades e tecnologia do Sistema IF são de propriedade do Instituto Federal
                                 e estão protegidos por leis de direitos autorais e propriedade intelectual.
                             </p>
                         </div>
@@ -69,7 +69,7 @@ function ModaisTermos() {
                         <div class="terms-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">5. Limitação de Responsabilidade</h6>
                             <p class="text-justify">
-                                O Sistema IF é fornecido "no estado em que se encontra". Não garantimos que o sistema estará 
+                                O Sistema IF é fornecido "no estado em que se encontra". Não garantimos que o sistema estará
                                 sempre disponível, seguro ou livre de erros. O usuário assume todo o risco relacionado ao uso do sistema.
                             </p>
                         </div>
@@ -77,8 +77,8 @@ function ModaisTermos() {
                         <div class="terms-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">6. Modificações nos Termos</h6>
                             <p class="text-justify">
-                                Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão 
-                                em vigor imediatamente após sua publicação no sistema. O uso continuado do sistema após 
+                                Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão
+                                em vigor imediatamente após sua publicação no sistema. O uso continuado do sistema após
                                 modificações constitui aceitação dos novos termos.
                             </p>
                         </div>
@@ -86,7 +86,7 @@ function ModaisTermos() {
                         <div class="terms-section">
                             <h6 class="fw-bold text-dark mb-3">7. Contato</h6>
                             <p class="text-justify">
-                                Em caso de dúvidas sobre estes Termos de Uso, entre em contato com a administração do sistema 
+                                Em caso de dúvidas sobre estes Termos de Uso, entre em contato com a administração do sistema
                                 através dos canais oficiais do Instituto Federal.
                             </p>
                         </div>
@@ -95,7 +95,7 @@ function ModaisTermos() {
                             <div class="d-flex align-items-center">
                                 <span class="iconify me-2" data-icon="mdi:information" data-width="20" data-height="20"></span>
                                 <span>
-                                    <strong>Importante:</strong> Ao utilizar este sistema, você confirma que leu, compreendeu e 
+                                    <strong>Importante:</strong> Ao utilizar este sistema, você confirma que leu, compreendeu e
                                     concorda com todos os termos e condições aqui estabelecidos.
                                 </span>
                             </div>
@@ -107,7 +107,7 @@ function ModaisTermos() {
                         <span class="iconify" data-icon="mdi:close" data-width="16" data-height="16"></span>
                         Fechar
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="printTerms(\'termosUsoModal\')">
+                    <button type="button" class="btn btn-primary" onclick="printTerms('termosUsoModal')">
                         <span class="iconify" data-icon="mdi:printer" data-width="16" data-height="16"></span>
                         Imprimir
                     </button>
@@ -167,7 +167,7 @@ function ModaisTermos() {
                         <div class="privacy-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">3. Proteção de Dados</h6>
                             <p class="text-justify">
-                                Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações 
+                                Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações
                                 pessoais contra acesso não autorizado, alteração, divulgação ou destruição.
                             </p>
                             <ul class="list-disc ms-4">
@@ -194,8 +194,8 @@ function ModaisTermos() {
                         <div class="privacy-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">5. Retenção de Dados</h6>
                             <p class="text-justify">
-                                Mantemos suas informações pessoais apenas pelo tempo necessário para cumprir os fins 
-                                para os quais foram coletadas, a menos que um período de retenção mais longo seja 
+                                Mantemos suas informações pessoais apenas pelo tempo necessário para cumprir os fins
+                                para os quais foram coletadas, a menos que um período de retenção mais longo seja
                                 exigido ou permitido por lei.
                             </p>
                         </div>
@@ -220,8 +220,8 @@ function ModaisTermos() {
                         <div class="privacy-section mb-4">
                             <h6 class="fw-bold text-dark mb-3">7. Cookies e Tecnologias Similares</h6>
                             <p class="text-justify">
-                                Utilizamos cookies e tecnologias similares para melhorar sua experiência no sistema, 
-                                lembrar suas preferências e analisar o uso do sistema. Você pode controlar o uso de 
+                                Utilizamos cookies e tecnologias similares para melhorar sua experiência no sistema,
+                                lembrar suas preferências e analisar o uso do sistema. Você pode controlar o uso de
                                 cookies através das configurações do seu navegador.
                             </p>
                         </div>
@@ -229,8 +229,8 @@ function ModaisTermos() {
                         <div class="privacy-section">
                             <h6 class="fw-bold text-dark mb-3">8. Alterações na Política</h6>
                             <p class="text-justify">
-                                Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos sobre 
-                                alterações significativas através do sistema ou por e-mail. O uso continuado do 
+                                Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos sobre
+                                alterações significativas através do sistema ou por e-mail. O uso continuado do
                                 sistema após alterações constitui aceitação da política revisada.
                             </p>
                         </div>
@@ -239,7 +239,7 @@ function ModaisTermos() {
                             <div class="d-flex align-items-center">
                                 <span class="iconify me-2" data-icon="mdi:shield-alert" data-width="20" data-height="20"></span>
                                 <span>
-                                    <strong>Proteção de Dados:</strong> Esta política está em conformidade com a Lei Geral de 
+                                    <strong>Proteção de Dados:</strong> Esta política está em conformidade com a Lei Geral de
                                     Proteção de Dados (LGPD - Lei 13.709/2018) e outras legislações aplicáveis.
                                 </span>
                             </div>
@@ -251,7 +251,7 @@ function ModaisTermos() {
                         <span class="iconify" data-icon="mdi:close" data-width="16" data-height="16"></span>
                         Fechar
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="printTerms(\'politicaPrivacidadeModal\')">
+                    <button type="button" class="btn btn-primary" onclick="printTerms('termosUsoModal')">
                         <span class="iconify" data-icon="mdi:printer" data-width="16" data-height="16"></span>
                         Imprimir
                     </button>
@@ -261,63 +261,73 @@ function ModaisTermos() {
     </div>
 
     <style>
-        .terms-content, .privacy-content {
+        .terms-content,
+        .privacy-content {
             max-height: 60vh;
             overflow-y: auto;
             padding-right: 10px;
         }
-        
-        .terms-content::-webkit-scrollbar, .privacy-content::-webkit-scrollbar {
+
+        .terms-content::-webkit-scrollbar,
+        .privacy-content::-webkit-scrollbar {
             width: 6px;
         }
-        
-        .terms-content::-webkit-scrollbar-track, .privacy-content::-webkit-scrollbar-track {
+
+        .terms-content::-webkit-scrollbar-track,
+        .privacy-content::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 3px;
         }
-        
-        .terms-content::-webkit-scrollbar-thumb, .privacy-content::-webkit-scrollbar-thumb {
+
+        .terms-content::-webkit-scrollbar-thumb,
+        .privacy-content::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 3px;
         }
-        
-        .terms-content::-webkit-scrollbar-thumb:hover, .privacy-content::-webkit-scrollbar-thumb:hover {
+
+        .terms-content::-webkit-scrollbar-thumb:hover,
+        .privacy-content::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
-        
-        .terms-section, .privacy-section {
+
+        .terms-section,
+        .privacy-section {
             border-left: 3px solid #3b82f6;
             padding-left: 1rem;
         }
-        
-        .terms-section h6, .privacy-section h6 {
+
+        .terms-section h6,
+        .privacy-section h6 {
             color: #1f2937;
         }
-        
+
         .list-disc {
             list-style-type: disc;
         }
-        
+
         .text-justify {
             text-align: justify;
         }
-        
+
         @media print {
-            .modal-header, .modal-footer {
+
+            .modal-header,
+            .modal-footer {
                 display: none !important;
             }
-            
+
             .modal-content {
                 border: none !important;
                 box-shadow: none !important;
             }
-            
+
             .modal-body {
                 padding: 0 !important;
                 overflow: visible !important;
             }
-            
-            .terms-content, .privacy-content {
+
+            .terms-content,
+            .privacy-content {
                 max-height: none !important;
                 overflow: visible !important;
             }
@@ -328,19 +338,19 @@ function ModaisTermos() {
         function printTerms(modalId) {
             const modalElement = document.getElementById(modalId);
             const modalContent = modalElement.querySelector(".modal-content").cloneNode(true);
-            
+
             // Remove botões do footer na versão impressa
             const modalFooter = modalContent.querySelector(".modal-footer");
             if (modalFooter) {
                 modalFooter.remove();
             }
-            
+
             // Remove botão fechar do header
             const closeButton = modalContent.querySelector(".btn-close");
             if (closeButton) {
                 closeButton.remove();
             }
-            
+
             // Cria uma nova janela para impressão
             const printWindow = window.open("", "_blank");
             printWindow.document.write(`
@@ -381,17 +391,17 @@ function ModaisTermos() {
                 </body>
                 </html>
             `);
-            
+
             printWindow.document.close();
             printWindow.focus();
-            
+
             // Aguarda o carregamento completo antes de imprimir
             printWindow.onload = function() {
                 printWindow.print();
                 printWindow.close();
             };
         }
-        
+
         // Fechar modal com ESC
         document.addEventListener("keydown", function(event) {
             if (event.key === "Escape") {
@@ -405,6 +415,6 @@ function ModaisTermos() {
             }
         });
     </script>
-    ';
+<?php
+    return ob_get_clean();
 }
-?>

@@ -1,11 +1,39 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+use App\Controllers\AboutController;
+use App\Controllers\AuthController;
+use App\Controllers\ContactController;
+use App\Controllers\ProductController;
+use App\Controllers\HomeController;
+use App\Controllers\ProfileController;
+use App\Middleware\AuthMiddleware;
+
+$host = 'localhost';
+$dbname = 'Site2';
+$username = 'root';
+$password = 'Senha@123';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Erro de conexão com o banco: " . $e->getMessage());
+}
+
+$authController = new AuthController($pdo);
+$productController = new ProductController($pdo);
+$homeController = new HomeController($pdo);
+$profileController = new ProfileController($pdo);
+$contactController = new ContactController($pdo);
+$aboutController = new AboutController($pdo);
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
 $clean_path = trim($path, '/');
-
 
 if ($clean_path === '' || $clean_path === 'index.php') {
     if (isset($_COOKIE['nome_usuario'])) {
@@ -17,132 +45,111 @@ if ($clean_path === '' || $clean_path === 'index.php') {
     }
 }
 
-
 switch ($clean_path) {
     case 'login':
-        if (isset($_COOKIE['nome_usuario'])) {
-            header('Location: /home');
-            exit;
-        }
-        require 'src/pages/login.php';
+        AuthMiddleware::redirectIfAuthenticated();
+        $authController->login();
         break;
 
     case 'home':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/home.php';
+        AuthMiddleware::checkAuth();
+        $homeController->index();
         break;
 
     case 'cadastro':
-        if (isset($_COOKIE['nome_usuario'])) {
-            header('Location: /home');
-            exit;
-        }
-        require 'src/pages/cadastro.php';
+        AuthMiddleware::redirectIfAuthenticated();
+        $authController->cadastro();
         break;
 
     case 'processa_cadastro':
-        if (isset($_COOKIE['nome_usuario'])) {
-            header('Location: /home');
-            exit;
-        }
-        require 'src/backend/processa_cadastro.php';
+        AuthMiddleware::redirectIfAuthenticated();
+        $authController->processarCadastro();
         break;
 
     case 'produtos':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/produtos/index.php';
+        AuthMiddleware::checkAuth();
+        $productController->index();
         break;
 
     case 'produtos/adicionar':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/produtos/adicionar.php';
+        AuthMiddleware::checkAuth();
+        $productController->adicionar();
         break;
 
     case 'produtos/visualizar':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/produtos/adicionar.php';
+        AuthMiddleware::checkAuth();
+        $id = $_GET['id'] ?? null;
+        $productController->visualizar($id);
         break;
 
     case 'produtos/editar':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/produtos/adicionar.php';
+        AuthMiddleware::checkAuth();
+        $id = $_GET['id'] ?? null;
+        $productController->editar($id);
         break;
 
-    case 'processa_produto':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/backend/processa_produto.php';
+    case 'produtos/processar':
+        AuthMiddleware::checkAuth();
+        $productController->processar();
         break;
-    case 'processa_edicao_produto':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/backend/processa_edicao_produto.php';
+
+    case 'produtos/processar-edicao':
+        AuthMiddleware::checkAuth();
+        $productController->processarEdicao();
         break;
 
     case 'produtos/excluir':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/backend/processa_exclusao_produto.php';
+        AuthMiddleware::checkAuth();
+        $productController->excluir();
         break;
 
     case 'sobre':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/sobre.php';
+    AuthMiddleware::checkAuth();
+    $aboutController = new AboutController($pdo);
+    $aboutController->sobre();
+    break;
+    case 'perfil':
+        AuthMiddleware::checkAuth();
+        $profileController->perfil();
         break;
 
-    case 'perfil':
-        if (!isset($_COOKIE['nome_usuario'])) {
-            header('Location: /login');
-            exit;
-        }
-        require 'src/pages/perfil.php';
+    case 'perfil/atualizar':
+        AuthMiddleware::checkAuth();
+        $profileController->atualizarPerfil();
+        break;
+
+    case 'perfil/alterar-senha':
+        AuthMiddleware::checkAuth();
+        $profileController->alterarSenha();
         break;
 
     case 'processa_login':
-        require 'src/backend/processa_login.php';
+        $authController->processarLogin();
         break;
 
     case 'tela-logout':
-        require 'src/pages/tela-logout.html';
+        AuthMiddleware::checkAuth();
+        $homeController->telaLogout();
+        break;
+    case 'contato':
+        AuthMiddleware::checkAuth();
+        $contactController = new ContactController($pdo);
+        $contactController->contato();
+        break;
+
+    case 'contato/processar':
+        AuthMiddleware::checkAuth();
+        $contactController = new ContactController($pdo);
+        $contactController->processarContato();
         break;
 
     case 'logout':
-        setcookie('nome_usuario', '', [
-            'expires' => time() - 3600,
-            'path' => '/',
-            'httponly' => true,
-            'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'
-        ]);
-        session_destroy();
-        header('Location: /login');
-        exit;
+        $homeController->logout();
+        break;
 
     default:
         http_response_code(404);
         echo "<h1>Página não encontrada</h1>";
+        echo "<p>A página '$clean_path' não foi encontrada.</p>";
         break;
 }

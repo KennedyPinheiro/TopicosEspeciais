@@ -1,6 +1,9 @@
+<?php
 
-
-<<nav class="custom-navbar">
+$nome_usuario = $nome_usuario ?? $_SESSION['usuario_nome'] ?? 'Usuário';
+$currentPage = $currentPage ?? 'home';
+?>
+<nav class="custom-navbar">
     <div class="nav-brand">
         <a href="/home" class="brand-link">
             <div class="logo-container">
@@ -9,13 +12,13 @@
             <span class="brand-text">Sistema IF</span>
         </a>
     </div>
-    
+
     <button class="nav-toggle" aria-controls="nav-menu" aria-expanded="false" aria-label="Abrir menu">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
     </button>
-    
+
     <ul class="nav-menu" id="nav-menu">
         <li>
             <a href="/home" class="nav-link <?php echo $currentPage === 'home' ? 'nav-active' : ''; ?>">
@@ -23,7 +26,7 @@
                 <span>Home</span>
             </a>
         </li>
-        
+
         <li>
             <a href="/produtos" class="nav-link <?php echo $currentPage === 'produtos' ? 'nav-active' : ''; ?>">
                 <span class="iconify" data-icon="mdi:package-variant" data-width="18" data-height="18"></span>
@@ -31,7 +34,6 @@
             </a>
         </li>
 
-        <!-- Dropdown para Desktop -->
         <li class="profile-dropdown desktop-only">
             <div class="profile-btn">
                 <div class="profile-avatar">
@@ -52,10 +54,16 @@
                     <span class="iconify" data-icon="mdi:account-cog" data-width="18" data-height="18"></span>
                     Meu Perfil
                 </a>
+                <a href="/contato" class="dropdown-item <?php echo $currentPage === 'contato' ? 'nav-active' : ''; ?>">
+                    <span class="iconify" data-icon="mdi:email" data-width="18" data-height="18"></span>
+                    <span>Contato</span>
+                </a>
                 <a href="/sobre" class="dropdown-item <?php echo $currentPage === 'sobre' ? 'dropdown-active' : ''; ?>">
                     <span class="iconify" data-icon="mdi:information" data-width="18" data-height="18"></span>
-                    Sobre o Sistema
+                    Sobre
                 </a>
+
+
                 <div class="dropdown-divider"></div>
                 <a href="/logout" class="dropdown-item logout-btn">
                     <span class="iconify" data-icon="mdi:logout" data-width="18" data-height="18"></span>
@@ -72,6 +80,12 @@
             </a>
         </li>
         <li class="mobile-only">
+            <a href="/contato" class="nav-link <?php echo $currentPage === 'contato' ? 'nav-active' : ''; ?>">
+                <span class="iconify" data-icon="mdi:email" data-width="18" data-height="18"></span>
+                <span>Contato</span>
+            </a>
+        </li>
+        <li class="mobile-only">
             <a href="/sobre" class="nav-link <?php echo $currentPage === 'sobre' ? 'nav-active' : ''; ?>">
                 <span class="iconify" data-icon="mdi:information" data-width="18" data-height="18"></span>
                 Sobre
@@ -83,6 +97,7 @@
                 Sair
             </a>
         </li>
+
     </ul>
 </nav>
 
@@ -156,7 +171,7 @@
         color: var(--text-muted);
         text-decoration: none;
         border-radius: 8px;
-        transition: all 0.2s ease;
+        transition: all 0.5s ease;
         font-weight: 500;
         font-size: 0.95rem;
         border: 1px solid transparent;
@@ -177,7 +192,6 @@
         font-weight: 600;
     }
 
-    /* Profile Dropdown Styles */
     .profile-dropdown {
         position: relative;
     }
@@ -214,7 +228,7 @@
     }
 
     .dropdown-arrow {
-        transition: transform 0.2s ease;
+        transition: transform 0.5s ease;
         color: var(--text-muted);
     }
 
@@ -275,7 +289,7 @@
         padding: 0.75rem 1.25rem;
         color: var(--text-muted);
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: all 0.5s ease;
         font-size: 0.9rem;
         border: none;
         background: none;
@@ -391,6 +405,7 @@
             opacity: 0;
             transform: translateY(10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);

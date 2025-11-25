@@ -1,33 +1,25 @@
 <?php
-function Button($props = []) {
-    $text = $props['text'] ?? 'Botão';
-    $type = $props['type'] ?? 'button';
-    $style = $props['style'] ?? 'primary';
-    $onclick = $props['onclick'] ?? '';
-    $class = $props['class'] ?? '';
-    $disabled = isset($props['disabled']) && $props['disabled'] ? 'disabled' : '';
+function Button($config) {
+    $text = $config['text'] ?? '';
+    $type = $config['type'] ?? 'button';
+    $style = $config['style'] ?? 'primary';
+    $class = $config['class'] ?? '';
+    $icon = $config['icon'] ?? '';
     
-    $bootstrapStyles = [
-        'primary' => 'btn-primary',
-        'secondary' => 'btn-secondary', 
-        'success' => 'btn-success',
-        'danger' => 'btn-danger',
-        'warning' => 'btn-warning',
-        'info' => 'btn-info',
-        'light' => 'btn-light',
-        'dark' => 'btn-dark',
-        'link' => 'btn-link'
-    ];
+    $buttonClass = "btn btn-{$style}";
+    if ($class) {
+        $buttonClass .= " {$class}";
+    }
     
-    $btnClass = $bootstrapStyles[$style] ?? $bootstrapStyles['primary'];
-    $fullClass = "btn $btnClass $class";
-    
-    return "
-        <button type='" . htmlspecialchars($type) . "' 
-                class='" . trim($fullClass) . "' 
-                onclick='" . htmlspecialchars($onclick) . "'
-                $disabled>
-            $text
-        </button>
-    ";
+    ob_start();
+    ?>
+    <button type="<?php echo $type; ?>" class="<?php echo $buttonClass; ?>">
+        <?php if ($icon): ?>
+            <span class="iconify" data-icon="<?php echo $icon; ?>" data-width="20" data-height="20"></span>
+        <?php endif; ?>
+        <?php echo htmlspecialchars($text); ?>
+    </button>
+    <?php
+    return ob_get_clean();
 }
+?>
