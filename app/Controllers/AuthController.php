@@ -62,7 +62,10 @@ class AuthController extends BaseController
 
     public function processarLogin()
     {
+        error_log("=== PROCESSAR LOGIN (AuthController) ===");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            error_log("Método não é POST");
             header('Location: /login');
             exit;
         }
@@ -70,6 +73,7 @@ class AuthController extends BaseController
         $request = new LoginRequest($_POST);
         
         if (!$request->validate()) {
+            error_log("Validação falhou: " . print_r($request->getErrors(), true));
             $this->setFlash('erro_login', 'Por favor, corrija os erros abaixo.');
             $this->setFlash('form_data', $request->getFormData());
             header('Location: /login');
@@ -79,32 +83,126 @@ class AuthController extends BaseController
         $data = $request->getValidatedData();
         $email = $data['email'];
         $senha = $data['senha'];
+        $lembrar_dados = $data['lembrar'];
+
+        error_log("Tentativa de login: email=$email, lembrar=$lembrar_dados");
 
         $user = $this->userService->getUserByEmail($email);
 
         if ($user && password_verify($senha, $user['senha'])) {
+            error_log("Login válido - configurando sessão e cookies");
+
+           setcookie('nome_usuario', $user['nome'], [
+                'expires' => time() + (2 * 3600),
+                'path' => '/',
+                'domain' => '',
+                'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+
+            if ($lembrar_dados) {
+                error_log("Salvando dados de login no cookie - LEMBRAR ATIVADO");
+                $dados_login = [
+                    'usuario' => $email,
+                    'senha' => $senha
+                ];
+
+                setcookie('ultimo_login', json_encode($dados_login), [
+                    'expires' => time() + (30 * 24 * 60 * 60),
+                    'path' => '/',
+                    'domain' => '',
+                    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+                    'httponly' => true,
+                    'samesite' => 'Lax'
+                ]);
+            } else {
+                error_log("Limpando cookie de lembrar dados - LEMBRAR DESATIVADO");
+                if (isset($_COOKIE['ultimo_login'])) {
+                    setcookie('ultimo_login', '', [
+                        'expires' => time() - 3600,
+                        'path' => '/',
+                        'domain' => '',
+                        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+                        'httponly' => true,
+                        'samesite' => 'Lax'
+                    ]);
+                }
+            }
+
             $_SESSION['usuario_id'] = $user['id'];
             $_SESSION['usuario_nome'] = $user['nome'];
             $_SESSION['usuario_email'] = $user['email'];
             $_SESSION['usuario_tipo'] = $user['tipo_usuario'];
             $_SESSION['logado'] = true;
 
-            if ($data['lembrar']) {
-                setcookie('nome_usuario', $user['nome'], time() + (86400 * 30), "/");
-                setcookie('usuario_email', $user['email'], time() + (86400 * 30), "/");
-            }
+            unset($_SESSION['erro_login']);
+            unset($_SESSION['usuario_digitado']);
 
             $this->setFlash('success_message', 'Login realizado com sucesso!');
+            
+            error_log("Redirecionando para /home");
             header('Location: /home');
             exit;
+            
         } else {
+            error_log("Login inválido - email ou senha incorretos");
             $this->setFlash('erro_login', 'E-mail ou senha inválidos.');
             $this->setFlash('form_data', [
                 'email' => $email,
-                'lembrar' => $data['lembrar']
+                'lembrar' => $lembrar_dados
             ]);
             header('Location: /login');
             exit;
+        }
+    }
+    private function setRememberMeCookies($user)
+    {
+        $rememberToken = bin2hex(random_bytes(32));
+        $expiry = time() + (30 * 24 * 60 * 60); 
+        
+        setcookie('remember_token', $rememberToken, [
+            'expires' => $expiry,
+            'path' => '/',
+            'domain' => '',
+            'secure' => isset($_SERVER['HTTPS']),
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        
+        setcookie('user_identifier', $user['email'], [
+            'expires' => $expiry,
+            'path' => '/',
+            'domain' => '',
+            'secure' => isset($_SERVER['HTTPS']),
+            'httponly' => false,
+            'samesite' => 'Lax'
+        ]);
+    }
+
+   
+    private function clearRememberMeCookies()
+    {
+        if (isset($_COOKIE['remember_token'])) {
+            setcookie('remember_token', '', [
+                'expires' => time() - 3600,
+                'path' => '/',
+                'domain' => '',
+                'secure' => isset($_SERVER['HTTPS']),
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+        }
+        
+        if (isset($_COOKIE['user_identifier'])) {
+            setcookie('user_identifier', '', [
+                'expires' => time() - 3600,
+                'path' => '/',
+                'domain' => '',
+                'secure' => isset($_SERVER['HTTPS']),
+                'httponly' => false,
+                'samesite' => 'Lax'
+            ]);
         }
     }
 

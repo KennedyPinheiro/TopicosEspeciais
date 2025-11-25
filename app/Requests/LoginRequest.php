@@ -11,12 +11,14 @@ class LoginRequest
         $this->data = [
             'email' => trim($postData['email'] ?? ''),
             'senha' => $postData['senha'] ?? '',
-            'lembrar' => isset($postData['lembrar']) && $postData['lembrar'] == 'on'
+            'lembrar' => isset($postData['lembrar']) && $postData['lembrar'] === 'on'
         ];
     }
 
     public function validate()
     {
+        $this->errors = [];
+
         if (empty($this->data['email'])) {
             $this->errors['email'] = 'E-mail é obrigatório';
         } elseif (!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
@@ -42,7 +44,10 @@ class LoginRequest
 
     public function getFormData()
     {
-        return $this->data;
+        return [
+            'email' => $this->data['email'],
+            'lembrar' => $this->data['lembrar']
+        ];
     }
 }
 ?>

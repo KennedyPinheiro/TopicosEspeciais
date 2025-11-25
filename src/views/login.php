@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -145,6 +144,10 @@
         .form-check-input:checked {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
         }
 
         .form-check-label {
@@ -307,7 +310,6 @@
                             class="form-control"
                             id="senha"
                             name="senha"
-                            value="<?php echo htmlspecialchars($senha_salva); ?>"
                             placeholder="Digite sua senha"
                             required />
                     </div>
@@ -347,6 +349,25 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lembrarCheckbox = document.getElementById('lembrar');
+            const emailInput = document.getElementById('email');
+            
+            if (lembrarCheckbox.checked) {
+                emailInput.focus();
+            }
+            
+            lembrarCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    this.parentElement.classList.add('text-primary');
+                } else {
+                    this.parentElement.classList.remove('text-primary');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
