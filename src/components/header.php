@@ -72,7 +72,6 @@ $currentPage = $currentPage ?? 'home';
             </div>
         </li>
 
-        <!-- Links para Mobile -->
         <li class="mobile-only">
             <a href="/perfil" class="nav-link <?php echo $currentPage === 'perfil' ? 'nav-active' : ''; ?>">
                 <span class="iconify" data-icon="mdi:account-cog" data-width="18" data-height="18"></span>
@@ -250,11 +249,34 @@ $currentPage = $currentPage ?? 'home';
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: 0.5rem;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        transition-delay: 0.1s;
     }
 
     .profile-dropdown:hover .dropdown-content {
         display: block;
-        animation: fadeInUp 0.2s ease;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .profile-dropdown .dropdown-content {
+        pointer-events: none;
+        transition: opacity 0.3s ease 0.5s, transform 0.3s ease 0.5s;
+    }
+
+    .profile-dropdown:hover .dropdown-content {
+        pointer-events: auto;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .profile-dropdown .dropdown-content {
+        transition-delay: 1s;
+    }
+
+    .profile-dropdown:hover .dropdown-content {
+        transition-delay: 0s;
     }
 
     .dropdown-header {
@@ -317,7 +339,6 @@ $currentPage = $currentPage ?? 'home';
         color: #fff;
     }
 
-    /* Mobile Styles */
     .nav-toggle {
         display: none;
         background: transparent;
@@ -441,5 +462,44 @@ $currentPage = $currentPage ?? 'home';
                 btn.setAttribute('aria-label', 'Abrir menu');
             }
         });
+
+        const profileDropdown = document.querySelector('.profile-dropdown');
+        const dropdownContent = document.querySelector('.dropdown-content');
+        let dropdownTimeout;
+
+        if (profileDropdown && dropdownContent) {
+            profileDropdown.addEventListener('mouseenter', function() {
+                clearTimeout(dropdownTimeout);
+                dropdownContent.style.display = 'block';
+                setTimeout(() => {
+                    dropdownContent.style.opacity = '1';
+                    dropdownContent.style.transform = 'translateY(0)';
+                }, 10);
+            });
+
+            profileDropdown.addEventListener('mouseleave', function() {
+                dropdownTimeout = setTimeout(() => {
+                    dropdownContent.style.opacity = '0';
+                    dropdownContent.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        dropdownContent.style.display = 'none';
+                    }, 300);
+                }, 1000); 
+            });
+
+            dropdownContent.addEventListener('mouseenter', function() {
+                clearTimeout(dropdownTimeout);
+            });
+
+            dropdownContent.addEventListener('mouseleave', function() {
+                dropdownTimeout = setTimeout(() => {
+                    dropdownContent.style.opacity = '0';
+                    dropdownContent.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        dropdownContent.style.display = 'none';
+                    }, 300);
+                }, 1000);
+            });
+        }
     })();
 </script>

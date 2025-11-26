@@ -6,141 +6,44 @@ $currentPage = "sobre";
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-dark: #0f172a;
-            --primary-medium: #1e293b;
-            --primary-light: #334155;
-            --accent-color: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
-            --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%) !important;
-            border: none;
-        }
-
-        .feature-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            height: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-dark);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 2rem;
-        }
-
-        .bg-gradient-blue {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-        }
-
-        .bg-gradient-green {
-            background: linear-gradient(135deg, #10b981, #047857);
-        }
-
-        .bg-gradient-purple {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        }
-
-        .bg-gradient-orange {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .tech-badge {
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-            margin: 0.25rem;
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.4rem;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #3b82f6;
-            border: 3px solid white;
-            box-shadow: 0 0 0 3px #3b82f6;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            min-height: 100vh;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/sobre.css">
 </head>
 
 <body>
-    <?php 
+    <?php
     $nome_usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
-    $this->renderComponent('header', ['currentPage' => $currentPage, 'nome_usuario' => $nome_usuario]); 
+    $this->renderComponent('header', ['currentPage' => $currentPage, 'nome_usuario' => $nome_usuario]);
     ?>
 
-    <main style="min-height: calc(100vh - 120px); padding: 20px 0;">
-        <div class="container mt-4">
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="p-4 bg-gradient-primary text-white rounded-3 shadow">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h1 class="display-6 fw-bold">Sobre o Sistema</h1>
-                                <p class="lead mb-0 opacity-75">Conheça mais sobre nossa aplicação e sua arquitetura</p>
-                            </div>
-                            <div class="text-end">
-                                <a href="/home" class="btn btn-light btn-lg px-4">
-                                    <span class="iconify" data-icon="mdi:arrow-left" data-width="20" data-height="20"></span>
-                                    Voltar
-                                </a>
-                            </div>
-                        </div>
+    <main style="min-height: calc(100vh - 120px); background: white;">
+    <div class="full-width-header">
+        <div class="container-fluid">
+            <div class="p-4 bg-gradient-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-6 fw-bold">Sobre o Sistema</h1>
+                        <p class="lead mb-0 opacity-75">Conheça mais sobre nossa aplicação e sua arquitetura</p>
+                    </div>
+                    <div class="text-end">
+                        <a href="/home" class="btn btn-light btn-lg px-4">
+                            <span class="iconify" data-icon="mdi:arrow-left" data-width="20" data-height="20"></span>
+                            Voltar
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="container-fluid px-4 py-5" style="background: white;">
+        <div class="content-wrapper">
             <div class="row mb-5">
                 <div class="col-lg-8">
                     <div class="card border-0 shadow-sm h-100">
@@ -425,11 +328,12 @@ $currentPage = "sobre";
                 </div>
             </div>
         </div>
-    </main>
-
+    </div>
+</main>
     <?php $this->renderComponent('footer'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
+
 </html>

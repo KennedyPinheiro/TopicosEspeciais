@@ -5,9 +5,7 @@ session_start();
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Controllers\AboutController;
 use App\Controllers\AuthController;
-use App\Controllers\ContactController;
 use App\Controllers\ProductController;
 use App\Controllers\HomeController;
 use App\Controllers\ProfileController;
@@ -22,15 +20,15 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Erro de conexão com o banco: " . $e->getMessage());
+    header('Location: /erro/500?error=' . urlencode($e->getMessage()));
+    exit;
 }
 
 $authController = new AuthController($pdo);
 $productController = new ProductController($pdo);
 $homeController = new HomeController($pdo);
 $profileController = new ProfileController($pdo);
-$contactController = new ContactController($pdo);
-$aboutController = new AboutController($pdo);
+
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
 $clean_path = trim($path, '/');
@@ -79,12 +77,20 @@ switch ($clean_path) {
     case 'produtos/visualizar':
         AuthMiddleware::checkAuth();
         $id = $_GET['id'] ?? null;
+        if (!$id) {
+            header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
+            exit;
+        }
         $productController->visualizar($id);
         break;
 
     case 'produtos/editar':
         AuthMiddleware::checkAuth();
         $id = $_GET['id'] ?? null;
+        if (!$id) {
+            header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
+            exit;
+        }
         $productController->editar($id);
         break;
 
@@ -104,10 +110,11 @@ switch ($clean_path) {
         break;
 
     case 'sobre':
-    AuthMiddleware::checkAuth();
-    $aboutController = new AboutController($pdo);
-    $aboutController->sobre();
-    break;
+        AuthMiddleware::checkAuth();
+        $aboutController = new HomeController($pdo);
+        $aboutController->sobre();
+        break;
+
     case 'perfil':
         AuthMiddleware::checkAuth();
         $profileController->perfil();
@@ -131,15 +138,16 @@ switch ($clean_path) {
         AuthMiddleware::checkAuth();
         $homeController->telaLogout();
         break;
+
     case 'contato':
         AuthMiddleware::checkAuth();
-        $contactController = new ContactController($pdo);
+        $contactController = new HomeController($pdo);
         $contactController->contato();
         break;
 
     case 'contato/processar':
         AuthMiddleware::checkAuth();
-        $contactController = new ContactController($pdo);
+        $contactController = new HomeController($pdo);
         $contactController->processarContato();
         break;
 
@@ -147,9 +155,51 @@ switch ($clean_path) {
         $homeController->logout();
         break;
 
-    default:
-        http_response_code(404);
-        echo "<h1>Página não encontrada</h1>";
-        echo "<p>A página '$clean_path' não foi encontrada.</p>";
+    case 'erro/404':
+        $this->showErrorPage(404);
         break;
+
+    case 'erro/500':
+        $this->showErrorPage(500);
+        break;
+
+    case 'erro/403':
+        $this->showErrorPage(403);
+        break;
+
+    case 'erro/400':
+        $this->showErrorPage(400);
+        break;
+
+    case 'erro/geral':
+        $this->showErrorPage('geral');
+        break;
+
+    default:
+        header('Location: /erro/404');
+        exit;
 }
+
+
+function showErrorPage($errorCode = 500) {
+    $errorFile = __DIR__ . "/src/views/erros/{$errorCode}.php";
+    
+    if (!file_exists($errorFile)) {
+        $errorFile = __DIR__ . "/src/views/erros/geral.php";
+    }
+    
+    $httpCodes = [
+        400 => 400,
+        403 => 403,
+        404 => 404,
+        500 => 500
+    ];
+    
+    if (isset($httpCodes[$errorCode])) {
+        http_response_code($httpCodes[$errorCode]);
+    }
+    
+    include $errorFile;
+    exit;
+}
+?>

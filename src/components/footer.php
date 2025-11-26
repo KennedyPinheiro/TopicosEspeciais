@@ -22,6 +22,10 @@ $nome_usuario = $nome_usuario ?? $_SESSION['usuario_nome'] ?? 'Usuário';
                     <span class="iconify" data-icon="mdi:information" data-width="16" data-height="16"></span>
                     Sobre
                 </a>
+                <a href="/contato" class="footer-link">
+                    <span class="iconify" data-icon="mdi:email" data-width="16" data-height="16"></span>
+                    Contato
+                </a>
                 <a href="/perfil" class="footer-link">
                     <span class="iconify" data-icon="mdi:account-cog" data-width="16" data-height="16"></span>
                     Perfil
@@ -38,6 +42,7 @@ $nome_usuario = $nome_usuario ?? $_SESSION['usuario_nome'] ?? 'Usuário';
         </div>
     </div>
 </footer>
+
 <?php
 if (!function_exists('ModaisTermos')) {
     require_once __DIR__ . '/../components/ModaisTermos.php';
@@ -119,6 +124,12 @@ echo ModaisTermos();
         color: var(--text-light);
         background: rgba(255, 255, 255, 0.08);
         text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .footer-link.active {
+        color: var(--text-light);
+        background: rgba(255, 255, 255, 0.12);
     }
 
     @media (max-width: 768px) {
@@ -150,8 +161,76 @@ echo ModaisTermos();
     }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-<?php echo $additionalJS ?? ''; ?>
-</body>
-</html>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const footerLinks = document.querySelectorAll('.footer-link[href^="#"]');
+    footerLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    const footerModals = document.querySelectorAll('.footer-link[data-bs-toggle="modal"]');
+    footerModals.forEach(modalTrigger => {
+        modalTrigger.addEventListener('click', function() {
+            const targetModal = this.getAttribute('data-bs-target');
+            const modal = document.querySelector(targetModal);
+            
+            if (modal) {
+                const bootstrapModal = new bootstrap.Modal(modal);
+                bootstrapModal.show();
+            }
+        });
+    });
+
+    const copyrightElement = document.querySelector('.copyright');
+    if (copyrightElement) {
+        const currentYear = new Date().getFullYear();
+        const currentYearText = copyrightElement.textContent.match(/\d{4}/);
+        if (currentYearText && currentYearText[0] !== currentYear.toString()) {
+            copyrightElement.innerHTML = copyrightElement.innerHTML.replace(/\d{4}/, currentYear);
+        }
+    }
+
+    const currentPath = window.location.pathname;
+    const footerLinksAll = document.querySelectorAll('.footer-link[href]');
+    
+    footerLinksAll.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath || 
+            (linkPath !== '/' && currentPath.startsWith(linkPath))) {
+            link.classList.add('active');
+        }
+    });
+
+    footerLinksAll.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+  
+    window.addEventListener('scroll', function() {
+        const footer = document.querySelector('.footer-custom');
+        if (footer && window.scrollY === 0) {
+            footer.classList.add('at-top');
+        } else if (footer) {
+            footer.classList.remove('at-top');
+        }
+    });
+});
+</script>

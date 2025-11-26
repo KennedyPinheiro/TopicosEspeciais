@@ -15,157 +15,225 @@ class ProductController extends BaseController
         $productModel = new Product($pdo);
         $this->productService = new ProductService($productModel);
     }
+    public function dashboard()
+    {
+        try {
+            $totalProducts = $this->productService->getProductsCount();
+            $withStock = $this->productService->getProductsWithStockCount();
+            $withoutStock = $this->productService->getProductsWithoutStockCount();
+            $recentProducts = $this->productService->getRecentProducts(5);
 
+            $pageTitle = 'Dashboard de Produtos - Sistema IF';
+            $currentPage = 'dashboard';
+
+            $this->render('produtos/dashboard', compact(
+                'totalProducts',
+                'withStock',
+                'withoutStock',
+                'recentProducts',
+                'pageTitle',
+                'currentPage'
+            ));
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao carregar dashboard');
+        }
+    }
     public function index()
     {
-        $produtos = $this->productService->getAllProducts();
-        $pageTitle = 'Produtos - Sistema IF';
-        $currentPage = 'produtos';
+        try {
+            $produtos = $this->productService->getAllProducts();
+            $pageTitle = 'Produtos - Sistema IF';
+            $currentPage = 'produtos';
 
-        $this->render('produtos/index', compact('produtos', 'pageTitle', 'currentPage'));
+            $this->render('produtos/index', compact('produtos', 'pageTitle', 'currentPage'));
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao carregar produtos');
+        }
     }
 
     public function adicionar()
     {
-        $pageTitle = 'Cadastrar Produto - Sistema IF';
-        $currentPage = 'produtos';
-        $modo = 'cadastro';
-        $produto = null;
+        try {
+            $pageTitle = 'Cadastrar Produto - Sistema IF';
+            $currentPage = 'produtos';
+            $modo = 'cadastro';
+            $produto = null;
 
-        $this->render('produtos/form', compact('pageTitle', 'currentPage', 'modo', 'produto'));
+            $this->render('produtos/form', compact('pageTitle', 'currentPage', 'modo', 'produto'));
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao carregar formulário de cadastro');
+        }
     }
 
     public function visualizar($id = null)
     {
-        if (!$id) {
-            $this->setFlash('erro', 'id_nao_informado');
-            header('Location: /produtos');
-            exit;
+        try {
+            if (!$id) {
+                header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
+                exit;
+            }
+
+            $produto = $this->productService->getProductById($id);
+            if (!$produto) {
+                header('Location: /erro/404?message=' . urlencode('Produto não encontrado'));
+                exit;
+            }
+
+            $pageTitle = 'Visualizar Produto - Sistema IF';
+            $currentPage = 'produtos';
+            $modo = 'visualizar';
+
+            $this->render('produtos/form', compact('pageTitle', 'currentPage', 'modo', 'produto'));
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao visualizar produto');
         }
-
-        $produto = $this->productService->getProductById($id);
-        if (!$produto) {
-            $this->setFlash('erro', 'produto_nao_encontrado');
-            header('Location: /produtos');
-            exit;
-        }
-
-        $pageTitle = 'Visualizar Produto - Sistema IF';
-        $currentPage = 'produtos';
-        $modo = 'visualizar';
-
-        $this->render('produtos/form', compact('pageTitle', 'currentPage', 'modo', 'produto'));
     }
 
     public function editar($id = null)
     {
-        if (!$id) {
-            $this->setFlash('erro', 'id_nao_informado');
-            header('Location: /produtos');
-            exit;
+        try {
+            if (!$id) {
+                header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
+                exit;
+            }
+
+            $produto = $this->productService->getProductById($id);
+            if (!$produto) {
+                header('Location: /erro/404?message=' . urlencode('Produto não encontrado'));
+                exit;
+            }
+
+            $pageTitle = 'Editar Produto - Sistema IF';
+            $currentPage = 'produtos';
+            $modo = 'editar';
+
+            $this->render('produtos/form', compact('pageTitle', 'currentPage', 'modo', 'produto'));
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao carregar edição de produto');
         }
-
-        $produto = $this->productService->getProductById($id);
-        if (!$produto) {
-            $this->setFlash('erro', 'produto_nao_encontrado');
-            header('Location: /produtos');
-            exit;
-        }
-
-        $pageTitle = 'Editar Produto - Sistema IF';
-        $currentPage = 'produtos';
-        $modo = 'editar';
-
-        $this->render('produtos/form', compact('pageTitle', 'currentPage', 'modo', 'produto'));
     }
 
     public function processar()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->setFlash('erro', 'metodo_nao_permitido');
-            header('Location: /produtos/adicionar');
-            exit;
-        }
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header('Location: /erro/405?message=' . urlencode('Método não permitido'));
+                exit;
+            }
 
-        $file = $_FILES['imagem'] ?? null;
-        $result = $this->productService->createProduct($_POST, $file);
+            $file = $_FILES['imagem'] ?? null;
+            $result = $this->productService->createProduct($_POST, $file);
 
-        if ($result['success']) {
-            $this->setFlash('sucesso', 'produto_adicionado');
-            header('Location: /produtos');
-            exit;
-        } else {
-            $this->setFlash('erro', 'campos_obrigatorios');
-            $this->setFlash('form_errors', $result['errors']);
-            $this->setFlash('form_data', $result['old_data']);
-            $this->setFlash('msg', implode(', ', $result['errors']));
-            
-            header('Location: /produtos/adicionar');
-            exit;
+            if ($result['success']) {
+                $this->setFlash('sucesso', 'produto_adicionado');
+                header('Location: /produtos');
+                exit;
+            } else {
+                $this->setFlash('erro', 'campos_obrigatorios');
+                $this->setFlash('form_errors', $result['errors']);
+                $this->setFlash('form_data', $result['old_data']);
+                $this->setFlash('msg', implode(', ', $result['errors']));
+
+                header('Location: /produtos/adicionar');
+                exit;
+            }
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao processar produto');
         }
     }
 
     public function processarEdicao()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->setFlash('erro', 'metodo_nao_permitido');
-            header('Location: /produtos');
-            exit;
-        }
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header('Location: /erro/405?message=' . urlencode('Método não permitido'));
+                exit;
+            }
 
-        $id = $_POST['id'] ?? null;
-        if (!$id) {
-            $this->setFlash('erro', 'id_nao_informado');
-            header('Location: /produtos');
-            exit;
-        }
+            $id = $_POST['id'] ?? null;
+            if (!$id) {
+                header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
+                exit;
+            }
 
-        $file = $_FILES['imagem'] ?? null;
-        $result = $this->productService->updateProduct($id, $_POST, $file);
+            $file = $_FILES['imagem'] ?? null;
+            $result = $this->productService->updateProduct($id, $_POST, $file);
 
-        if ($result['success']) {
-            $this->setFlash('sucesso', 'produto_editado');
-            header('Location: /produtos');
-            exit;
-        } else {
-            $this->setFlash('erro', 'campos_obrigatorios');
-            $this->setFlash('form_errors', $result['errors']);
-            $this->setFlash('form_data', $result['old_data']);
-            $this->setFlash('msg', implode(', ', $result['errors']));
-            
-            header("Location: /produtos/editar?id={$id}");
-            exit;
+            if ($result['success']) {
+                $this->setFlash('sucesso', 'produto_editado');
+                header('Location: /produtos');
+                exit;
+            } else {
+                $this->setFlash('erro', 'campos_obrigatorios');
+                $this->setFlash('form_errors', $result['errors']);
+                $this->setFlash('form_data', $result['old_data']);
+                $this->setFlash('msg', implode(', ', $result['errors']));
+
+                header("Location: /produtos/editar?id={$id}");
+                exit;
+            }
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao atualizar produto');
         }
     }
 
     public function excluir()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->setFlash('erro', 'metodo_nao_permitido');
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header('Location: /erro/405?message=' . urlencode('Método não permitido'));
+                exit;
+            }
+
+            $id = $_POST['id'] ?? null;
+            if (!$id) {
+                header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
+                exit;
+            }
+
+            $result = $this->productService->deleteProduct($id);
+
+            if ($result['success']) {
+                $this->setFlash('sucesso', 'produto_excluido');
+            } else {
+                $this->setFlash('erro', 'erro_exclusao');
+                $this->setFlash('msg', $result['error']);
+            }
+
             header('Location: /produtos');
             exit;
+        } catch (\Exception $e) {
+            $this->handleException($e, 'Erro ao excluir produto');
         }
-
-        $id = $_POST['id'] ?? null;
-        if (!$id) {
-            $this->setFlash('erro', 'id_nao_informado');
-            header('Location: /produtos');
-            exit;
-        }
-
-        $result = $this->productService->deleteProduct($id);
-
-        if ($result['success']) {
-            $this->setFlash('sucesso', 'produto_excluido');
-        } else {
-            $this->setFlash('erro', 'erro_exclusao');
-            $this->setFlash('msg', $result['error']);
-        }
-
-        header('Location: /produtos');
-        exit;
     }
 
+
+    private function handleException(\Exception $e, string $context = 'Erro')
+    {
+        error_log("{$context}: " . $e->getMessage());
+
+        $message = urlencode("{$context}: " . $e->getMessage());
+
+        if (
+            strpos($e->getMessage(), 'not found') !== false ||
+            strpos($e->getMessage(), 'não encontrado') !== false
+        ) {
+            header('Location: /erro/404?message=' . $message);
+        } elseif (
+            strpos($e->getMessage(), 'permission') !== false ||
+            strpos($e->getMessage(), 'acesso negado') !== false
+        ) {
+            header('Location: /erro/403?message=' . $message);
+        } elseif (
+            strpos($e->getMessage(), 'validation') !== false ||
+            strpos($e->getMessage(), 'validação') !== false
+        ) {
+            header('Location: /erro/400?message=' . $message);
+        } else {
+            header('Location: /erro/500?error=' . $message);
+        }
+        exit;
+    }
     public function renderModaisTermos()
     {
         echo '
@@ -200,4 +268,3 @@ class ProductController extends BaseController
         </div>';
     }
 }
-?>

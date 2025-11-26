@@ -1,5 +1,4 @@
 <?php
-// app/Services/UserService.php
 
 namespace App\Services;
 
@@ -17,27 +16,27 @@ class UserService
 
     public function createUser(array $data): array
     {
-        $request = new UserRequest($data);
-        
-        if (!$request->validate()) {
-            return [
-                'success' => false,
-                'errors' => $request->getErrors(),
-                'old_data' => $request->getOldData()
-            ];
-        }
-
-        if ($this->userModel->findByEmail($data['email'])) {
-            return [
-                'success' => false,
-                'errors' => ['email' => 'Este e-mail já está cadastrado'],
-                'old_data' => $request->getOldData()
-            ];
-        }
-
-        $validatedData = $request->getValidatedData();
-
         try {
+            $request = new UserRequest($data);
+            
+            if (!$request->validate()) {
+                return [
+                    'success' => false,
+                    'errors' => $request->getErrors(),
+                    'old_data' => $request->getOldData()
+                ];
+            }
+
+            if ($this->userModel->findByEmail($data['email'])) {
+                return [
+                    'success' => false,
+                    'errors' => ['email' => 'Este e-mail já está cadastrado'],
+                    'old_data' => $request->getOldData()
+                ];
+            }
+
+            $validatedData = $request->getValidatedData();
+
             $userId = $this->userModel->create($validatedData);
             
             if ($userId) {
@@ -47,51 +46,48 @@ class UserService
                     'user_id' => $userId
                 ];
             } else {
-                return [
-                    'success' => false,
-                    'errors' => ['general' => 'Erro ao cadastrar usuário. Tente novamente.'],
-                    'old_data' => $request->getOldData()
-                ];
+                throw new \Exception('Erro ao criar usuário no banco de dados');
             }
+            
         } catch (\Exception $e) {
             error_log('Erro ao criar usuário: ' . $e->getMessage());
             return [
                 'success' => false,
                 'errors' => ['general' => 'Erro interno do sistema. Tente novamente.'],
-                'old_data' => $request->getOldData()
+                'old_data' => $data
             ];
         }
     }
 
     public function updateUser(int $id, array $data): array
     {
-        $request = new UserRequest($data);
-        
-        if (empty($data['senha'])) {
-            unset($data['senha']);
-            unset($data['confirmar_senha']);
-        }
-
-        if (!$request->validate()) {
-            return [
-                'success' => false,
-                'errors' => $request->getErrors(),
-                'old_data' => $request->getOldData()
-            ];
-        }
-
-        $existingUser = $this->userModel->findByEmail($data['email']);
-        if ($existingUser && $existingUser['id'] != $id) {
-            return [
-                'success' => false,
-                'errors' => ['email' => 'Este e-mail já está cadastrado'],
-                'old_data' => $request->getOldData()
-            ];
-        }
-
-        $validatedData = $request->getValidatedData();
-
         try {
+            $request = new UserRequest($data);
+            
+            if (empty($data['senha'])) {
+                unset($data['senha']);
+                unset($data['confirmar_senha']);
+            }
+
+            if (!$request->validate()) {
+                return [
+                    'success' => false,
+                    'errors' => $request->getErrors(),
+                    'old_data' => $request->getOldData()
+                ];
+            }
+
+            $existingUser = $this->userModel->findByEmail($data['email']);
+            if ($existingUser && $existingUser['id'] != $id) {
+                return [
+                    'success' => false,
+                    'errors' => ['email' => 'Este e-mail já está cadastrado'],
+                    'old_data' => $request->getOldData()
+                ];
+            }
+
+            $validatedData = $request->getValidatedData();
+
             $result = $this->userModel->update($id, $validatedData);
             
             if ($result) {
@@ -100,30 +96,36 @@ class UserService
                     'message' => 'Usuário atualizado com sucesso!'
                 ];
             } else {
-                return [
-                    'success' => false,
-                    'errors' => ['general' => 'Erro ao atualizar usuário. Tente novamente.'],
-                    'old_data' => $request->getOldData()
-                ];
+                throw new \Exception('Erro ao atualizar usuário no banco de dados');
             }
+            
         } catch (\Exception $e) {
             error_log('Erro ao atualizar usuário: ' . $e->getMessage());
             return [
                 'success' => false,
                 'errors' => ['general' => 'Erro interno do sistema. Tente novamente.'],
-                'old_data' => $request->getOldData()
+                'old_data' => $data
             ];
         }
     }
 
     public function getUserById(int $id): ?array
     {
-        return $this->userModel->findById($id);
+        try {
+            return $this->userModel->findById($id);
+        } catch (\Exception $e) {
+            error_log('Erro ao buscar usuário por ID: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function getUserByEmail(string $email): ?array
     {
-        return $this->userModel->findByEmail($email);
+        try {
+            return $this->userModel->findByEmail($email);
+        } catch (\Exception $e) {
+            error_log('Erro ao buscar usuário por email: ' . $e->getMessage());
+            return null;
+        }
     }
 }
-?>

@@ -33,90 +33,34 @@ if (!isset($usuario)) {
     <title><?php echo $pageTitle; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-dark: #0f172a;
-            --primary-medium: #1e293b;
-            --primary-light: #334155;
-            --accent-color: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
-            --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%) !important;
-            border: none;
-        }
-
-        .avatar-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .avatar-placeholder {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-
-        .user-info {
-            border-bottom: 1px solid #e9ecef;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .info-item {
-            padding: 0.5rem 0;
-        }
-
-        .info-item:not(:last-child) {
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .security-item {
-            transition: all 0.2s ease;
-        }
-
-        .security-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn.text-start {
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-        }
-
-        .form-control:read-only {
-            background-color: #f8f9fa;
-            border-color: #e9ecef;
-            color: #6c757d;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            min-height: 100vh;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/perfil.css">
 </head>
 
 <body>
     <?php $this->renderComponent('header'); ?>
 
-    <main style="min-height: calc(100vh - 120px); padding: 20px 0;">
-        <div class="container mt-4">
+    <main style="min-height: calc(100vh - 120px); background: white;">
+    <div class="full-width-header">
+        <div class="container-fluid">
+            <div class="bg-gradient-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-6 fw-bold">Meu Perfil</h1>
+                        <p class="lead mb-3 opacity-75">Gerencie suas informações pessoais e preferências</p>
+                    </div>
+                    <div class="text-end">
+                        <a href="/home" class="btn btn-light btn-lg px-4">
+                            <span class="iconify" data-icon="mdi:arrow-left" data-width="20" data-height="20"></span>
+                            Voltar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4 py-5" style="background: white;">
+        <div class="content-wrapper">
             <?php if ($success_perfil): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <span class="iconify" data-icon="mdi:check-circle" data-width="20" data-height="20"></span>
@@ -148,25 +92,6 @@ if (!isset($usuario)) {
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
-
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="p-4 bg-gradient-primary text-white rounded-3 shadow">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h1 class="display-6 fw-bold">Meu Perfil</h1>
-                                <p class="lead mb-0 opacity-75">Gerencie suas informações pessoais e preferências</p>
-                            </div>
-                            <div class="text-end">
-                                <a href="/home" class="btn btn-light btn-lg px-4">
-                                    <span class="iconify" data-icon="mdi:arrow-left" data-width="20" data-height="20"></span>
-                                    Voltar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col-lg-8">
@@ -376,7 +301,8 @@ if (!isset($usuario)) {
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
     <div class="modal fade" id="alterarSenhaModal" tabindex="-1" aria-labelledby="alterarSenhaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -413,46 +339,7 @@ if (!isset($usuario)) {
         </div>
     </div>
 
-    <script>
-        let originalFormData = {};
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const formData = new FormData(form);
-            for (let [key, value] of formData.entries()) {
-                originalFormData[key] = value;
-            }
-
-            const telefoneInput = document.getElementById('telefone');
-            if (telefoneInput) {
-                telefoneInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    if (value.length <= 11) {
-                        if (value.length <= 2) {
-                            value = value.replace(/^(\d{0,2})/, '($1');
-                        } else if (value.length <= 6) {
-                            value = value.replace(/^(\d{2})(\d{0,4})/, '($1) $2');
-                        } else if (value.length <= 10) {
-                            value = value.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-                        } else {
-                            value = value.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-                        }
-                        e.target.value = value;
-                    }
-                });
-            }
-        });
-
-        function resetForm() {
-            const form = document.querySelector('form');
-            for (let [key, value] of Object.entries(originalFormData)) {
-                const input = form.querySelector(`[name="${key}"]`);
-                if (input) {
-                    input.value = value;
-                }
-            }
-        }
-    </script>
+   <script src="/assets/js/perfil.js"></script>
 
     <?php $this->renderComponent('footer'); ?>
 </body>

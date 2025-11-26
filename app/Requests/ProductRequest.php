@@ -6,12 +6,10 @@ class ProductRequest
 {
     private $data;
     private $errors = [];
-    private $modo;
 
-    public function __construct(array $data, string $modo = 'cadastro')
+    public function __construct(array $data)
     {
         $this->data = $data;
-        $this->modo = $modo;
     }
 
     public function validate(): bool
@@ -22,38 +20,41 @@ class ProductRequest
             $this->errors['nome'] = 'Nome do produto é obrigatório';
         } elseif (strlen(trim($this->data['nome'])) < 2) {
             $this->errors['nome'] = 'Nome deve ter pelo menos 2 caracteres';
+        } elseif (strlen(trim($this->data['nome'])) > 255) {
+            $this->errors['nome'] = 'Nome deve ter no máximo 255 caracteres';
         }
 
         if (empty(trim($this->data['sku'] ?? ''))) {
             $this->errors['sku'] = 'SKU é obrigatório';
         } elseif (strlen(trim($this->data['sku'])) < 2) {
             $this->errors['sku'] = 'SKU deve ter pelo menos 2 caracteres';
+        } elseif (strlen(trim($this->data['sku'])) > 50) {
+            $this->errors['sku'] = 'SKU deve ter no máximo 50 caracteres';
+        } elseif (!preg_match('/^[a-zA-Z0-9_-]+$/', $this->data['sku'])) {
+            $this->errors['sku'] = 'SKU deve conter apenas letras, números, hífens e underscores';
         }
 
         if (empty($this->data['preco'] ?? '')) {
             $this->errors['preco'] = 'Preço é obrigatório';
         } else {
-            $preco = $this->formatPrice($this->data['preco']);
-            if ($preco <= 0) {
+            $precoNumerico = $this->formatPriceForValidation($this->data['preco']);
+            if (!is_numeric($precoNumerico) || $precoNumerico <= 0) {
                 $this->errors['preco'] = 'Preço deve ser maior que zero';
             }
         }
 
         if (!isset($this->data['quantidade']) || $this->data['quantidade'] === '') {
             $this->errors['quantidade'] = 'Quantidade é obrigatória';
-        } else {
-            $quantidade = (int) $this->data['quantidade'];
-            if ($quantidade < 0) {
-                $this->errors['quantidade'] = 'Quantidade não pode ser negativa';
-            }
+        } elseif (!is_numeric($this->data['quantidade']) || $this->data['quantidade'] < 0) {
+            $this->errors['quantidade'] = 'Quantidade deve ser um número maior ou igual a zero';
         }
 
-        if (!empty($this->data['descricao'] ?? '') && strlen($this->data['descricao']) > 1000) {
-            $this->errors['descricao'] = 'Descrição deve ter no máximo 1000 caracteres';
-        }
-
-        if (!empty($this->data['categoria'] ?? '') && strlen($this->data['categoria']) > 100) {
+        if (!empty($this->data['categoria']) && strlen(trim($this->data['categoria'])) > 100) {
             $this->errors['categoria'] = 'Categoria deve ter no máximo 100 caracteres';
+        }
+
+        if (!empty($this->data['descricao']) && strlen(trim($this->data['descricao'])) > 1000) {
+            $this->errors['descricao'] = 'Descrição deve ter no máximo 1000 caracteres';
         }
 
         return empty($this->errors);
@@ -66,48 +67,26 @@ class ProductRequest
 
     public function getValidatedData(): array
     {
-        $data = [
+        return [
             'nome' => trim($this->data['nome']),
             'sku' => trim($this->data['sku']),
-            'preco' => $this->data['preco'],
-            'quantidade' => (int) $this->data['quantidade']
-        ];
-
-        if (!empty($this->data['descricao'] ?? '')) {
-            $data['descricao'] = trim($this->data['descricao']);
-        }
-
-        if (!empty($this->data['categoria'] ?? '')) {
-            $data['categoria'] = trim($this->data['categoria']);
-        }
-
-        if (isset($this->data['imagem']) && $this->data['imagem'] !== '') {
-            $data['imagem'] = $this->data['imagem'];
-        }
-
-        return $data;
-    }
-
-    public function getOldData(): array
-    {
-        return [
-            'nome' => $this->data['nome'] ?? '',
-            'sku' => $this->data['sku'] ?? '',
-            'descricao' => $this->data['descricao'] ?? '',
-            'preco' => $this->data['preco'] ?? '',
-            'quantidade' => $this->data['quantidade'] ?? '',
-            'categoria' => $this->data['categoria'] ?? '',
-            'imagem' => $this->data['imagem'] ?? ($this->data['imagem_atual'] ?? '')
+            'descricao' => isset($this->data['descricao']) ? trim($this->data['descricao']) : null,
+            'preco' => $this->data['preco'], 
+            'quantidade' => (int) $this->data['quantidade'],
+            'categoria' => isset($this->data['categoria']) ? trim($this->data['categoria']) : null
         ];
     }
 
-    private function formatPrice($price): float
+    private function formatPriceForValidation($price)
     {
-        if (is_string($price)) {            $price = str_replace(['R$', ' ', '.'], '', $price);
-            $price = str_replace(',', '.', $price);
+        if (is_numeric($price)) {
+            return floatval($price);
         }
         
-        return (float) $price;
+        $cleanPrice = str_replace(['R$', ' ', '.'], '', $price);
+        $cleanPrice = str_replace(',', '.', $cleanPrice);
+        
+        return floatval($cleanPrice);
     }
 }
 ?>

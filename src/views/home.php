@@ -1,27 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-dark: #0f172a;
-            --primary-medium: #1e293b;
-            --primary-light: #334155;
-            --accent-color: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
-            --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/home.css">
 </head>
+
 <body>
-     <?php
+    <?php
     $nome_usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
     $this->renderComponent('header', ['currentPage' => $currentPage, 'nome_usuario' => $nome_usuario]);
     ?>
@@ -55,7 +45,7 @@
                             <?= count($produtos) ?> produtos
                         </span>
                     </div>
-                    
+
                     <?php if (empty($produtos)): ?>
                         <div class="text-center py-5">
                             <div class="mb-4">
@@ -71,9 +61,9 @@
                     <?php else: ?>
                         <div class="row g-4">
                             <?php foreach ($produtos as $produto): ?>
-                                <?php 
+                                <?php
                                 // Inclui o card de produto passando os dados
-                                $this->renderComponent('card-produto', ['produto' => $produto]); 
+                                $this->renderComponent('card-produto', ['produto' => $produto]);
                                 ?>
                             <?php endforeach; ?>
                         </div>
@@ -161,79 +151,11 @@
             </div>
         </div>
     </main>
-
-    <style>
-        .full-width-header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
-            margin-bottom: 2rem;
-        }
-
-        .full-width-header .container-fluid {
-            padding: 0;
-        }
-
-        .full-width-header .bg-gradient-primary {
-            background: transparent !important;
-            border-radius: 0 !important;
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%) !important;
-            border: none;
-        }
-
-        .product-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-        }
-
-        .card-img-container {
-            overflow: hidden;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .card-img-top {
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .card-img-top {
-            transform: scale(1.05);
-        }
-
-        .bg-gradient-dark {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            border: none;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-        }
-
-        @media (min-width: 1400px) {
-            .container-fluid.px-4 {
-                padding-left: 3rem !important;
-                padding-right: 3rem !important;
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .container-fluid.px-4 {
-                padding-left: 2rem !important;
-                padding-right: 2rem !important;
-            }
-        }
-    </style>
-
     <?php
     $this->renderComponent('footer');
     ?>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
+
 </html>

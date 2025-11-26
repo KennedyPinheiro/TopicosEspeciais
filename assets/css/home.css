@@ -1,0 +1,84 @@
+:root {
+  --primary-dark: #0f172a;
+  --primary-medium: #1e293b;
+  --primary-light: #334155;
+  --accent-color: #3b82f6;
+  --accent-hover: #2563eb;
+  --text-light: #f8fafc;
+  --text-muted: #94a3b8;
+  --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
+  --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
+}
+
+.full-width-header {
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark) 0%,
+    var(--primary-medium) 100%
+  );
+  margin-bottom: 2rem;
+}
+
+.full-width-header .container-fluid {
+  padding: 0;
+}
+
+.full-width-header .bg-gradient-primary {
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark) 0%,
+    var(--primary-medium) 100%
+  ) !important;
+  border: none;
+}
+
+.product-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-img-container {
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+.card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border: none;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+
+@media (min-width: 1400px) {
+  .container-fluid.px-4 {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container-fluid.px-4 {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}

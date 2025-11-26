@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\User;
@@ -14,33 +15,36 @@ class ProfileService
 
     public function getUserProfileData(): array
     {
-        $usuario_id = $_SESSION['usuario_id'] ?? null;
+        try {
+            $usuario_id = $_SESSION['usuario_id'] ?? null;
 
-        error_log("=== ProfileService Debug ===");
-        error_log("SESSION usuario_id: " . ($_SESSION['usuario_id'] ?? 'NULL'));
+            error_log("=== ProfileService Debug ===");
+            error_log("SESSION usuario_id: " . ($_SESSION['usuario_id'] ?? 'NULL'));
 
-        if (!$usuario_id) {
-            error_log("ERRO: Usuário não autenticado");
-            throw new \Exception('Usuário não autenticado.');
+            if (!$usuario_id) {
+                error_log("ERRO: Usuário não autenticado");
+                throw new \Exception('Usuário não autenticado.');
+            }
+
+            $usuario = $this->userModel->findById($usuario_id);
+
+            error_log("Resultado da busca no banco: " . ($usuario ? 'ENCONTRADO' : 'NÃO ENCONTRADO'));
+
+            if (!$usuario) {
+                error_log("ERRO: Usuário não encontrado no banco de dados");
+                throw new \Exception('Usuário não encontrado.');
+            }
+
+            $formatted = $this->formatUserData($usuario);
+            error_log("Dados formatados: " . print_r($formatted, true));
+
+            return $formatted;
+        } catch (\Exception $e) {
+            error_log("Erro em getUserProfileData: " . $e->getMessage());
+            throw $e;
         }
-
-        $usuario = $this->userModel->findById($usuario_id);
-
-        error_log("Resultado da busca no banco: " . ($usuario ? 'ENCONTRADO' : 'NÃO ENCONTRADO'));
-        if ($usuario) {
-            error_log("Dados do usuário: " . print_r($usuario, true));
-        }
-
-        if (!$usuario) {
-            error_log("ERRO: Usuário não encontrado no banco de dados");
-            throw new \Exception('Usuário não encontrado.');
-        }
-
-        $formatted = $this->formatUserData($usuario);
-        error_log("Dados formatados: " . print_r($formatted, true));
-
-        return $formatted;
     }
+
 
     private function formatUserData(array $usuario): array
     {
@@ -80,7 +84,7 @@ class ProfileService
         if (!$date) {
             return 'Não informada';
         }
-        
+
         try {
             $timestamp = strtotime($date);
             return $timestamp !== false ? date('d/m/Y', $timestamp) : 'Data inválida';
@@ -95,7 +99,7 @@ class ProfileService
         if (!$datetime) {
             return 'Nunca';
         }
-        
+
         try {
             $timestamp = strtotime($datetime);
             return $timestamp !== false ? date('d/m/Y H:i:s', $timestamp) : 'Data/hora inválida';
@@ -107,34 +111,56 @@ class ProfileService
 
     public function updateProfile(array $data): bool
     {
-        $usuario_id = $_SESSION['usuario_id'] ?? null;
+        try {
+            $usuario_id = $_SESSION['usuario_id'] ?? null;
 
-        if (!$usuario_id) {
-            throw new \Exception('Usuário não autenticado.');
+            if (!$usuario_id) {
+                throw new \Exception('Usuário não autenticado.');
+            }
+
+            $existingUser = $this->userModel->findByEmail($data['email']);
+            if ($existingUser && $existingUser['id'] != $usuario_id) {
+                throw new \Exception('Este e-mail já está em uso por outro usuário.');
+            }
+
+            $result = $this->userModel->updateProfile($usuario_id, $data);
+
+            if (!$result) {
+                throw new \Exception('Erro ao atualizar perfil no banco de dados.');
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            error_log("Erro em updateProfile: " . $e->getMessage());
+            throw $e;
         }
-
-        $existingUser = $this->userModel->findByEmail($data['email']);
-        if ($existingUser && $existingUser['id'] != $usuario_id) {
-            throw new \Exception('Este e-mail já está em uso por outro usuário.');
-        }
-
-        return $this->userModel->updateProfile($usuario_id, $data);
     }
 
     public function changePassword(string $senhaAtual, string $novaSenha): bool
     {
-        $usuario_id = $_SESSION['usuario_id'] ?? null;
+        try {
+            $usuario_id = $_SESSION['usuario_id'] ?? null;
 
-        if (!$usuario_id) {
-            throw new \Exception('Usuário não autenticado.');
+            if (!$usuario_id) {
+                throw new \Exception('Usuário não autenticado.');
+            }
+
+            $usuario = $this->userModel->findById($usuario_id);
+            if (!$usuario || !password_verify($senhaAtual, $usuario['senha'])) {
+                throw new \Exception('Senha atual incorreta.');
+            }
+
+            $result = $this->userModel->updatePassword($usuario_id, $novaSenha);
+
+            if (!$result) {
+                throw new \Exception('Erro ao atualizar senha no banco de dados.');
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            error_log("Erro em changePassword: " . $e->getMessage());
+            throw $e;
         }
-
-        $usuario = $this->userModel->findById($usuario_id);
-        if (!$usuario || !password_verify($senhaAtual, $usuario['senha'])) {
-            throw new \Exception('Senha atual incorreta.');
-        }
-
-        return $this->userModel->updatePassword($usuario_id, $novaSenha);
     }
 
     public function canEditProfile($user_id): bool
@@ -153,4 +179,3 @@ class ProfileService
         }
     }
 }
-?>

@@ -5,73 +5,44 @@ $msg = $this->getFlash('msg') ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-dark: #0f172a;
-            --primary-medium: #1e293b;
-            --primary-light: #334155;
-            --accent-color: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
-            --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
-        }
-        
-        .bg-gradient-dark {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            border: none;
-        }
-        
-        .table > :not(caption) > * > * {
-            padding: 1rem 0.75rem;
-        }
-        
-        .table-hover tbody tr:hover {
-            background-color: rgba(0, 123, 255, 0.04);
-        }
-        
-        .table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-            color: #495057;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/produto.css">
 </head>
+
 <body>
-    <?php 
+    <?php
     $nome_usuario = $_SESSION['usuario_nome'] ?? 'Usuário';
-    $this->renderComponent('header', ['currentPage' => $currentPage, 'nome_usuario' => $nome_usuario]); 
+    $this->renderComponent('header', ['currentPage' => $currentPage, 'nome_usuario' => $nome_usuario]);
     ?>
 
-    <main style="min-height: calc(100vh - 120px); padding: 20px 30px;">
-        <div class="mt-4">
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="p-4 bg-gradient-dark text-white rounded-3 shadow">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h1 class="display-6 fw-bold">Gerenciar Produtos</h1>
-                                <p class="lead mb-0 opacity-75">Gerencie todos os produtos do sistema</p>
-                            </div>
-                            <div class="text-end">
-                                <a href="/produtos/adicionar" class="btn btn-light btn-lg px-4">
-                                    <span class="iconify" data-icon="mdi:plus" data-width="20" data-height="20"></span>
-                                    Novo Produto
-                                </a>
-                            </div>
-                        </div>
+   <main style="min-height: calc(100vh - 120px); background: white;">
+    <div class="full-width-header">
+        <div class="container-fluid">
+            <div class="p-4 bg-gradient-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-6 fw-bold">Gerenciar Produtos</h1>
+                        <p class="lead mb-0 opacity-75">Gerencie todos os produtos do sistema</p>
+                    </div>
+                    <div class="text-end">
+                        <a href="/produtos/adicionar" class="btn btn-light btn-lg px-4">
+                            <span class="iconify" data-icon="mdi:plus" data-width="20" data-height="20"></span>
+                            Novo Produto
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="container-fluid px-4 py-5" style="background: white;">
+        <div class="content-wrapper">
             <?php if ($sucesso): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <?php
@@ -168,25 +139,17 @@ $msg = $this->getFlash('msg') ?? '';
                 <?php endif; ?>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <?php 
+    <?php
     $this->renderComponent('footer', ['nome_usuario' => $nome_usuario]);
     ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, 5000);
-            });
-        });
-    </script>
+
+    <script src="/assets/js/produto.js"></script>
 </body>
+
 </html>
