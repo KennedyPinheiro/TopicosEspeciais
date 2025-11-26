@@ -4,6 +4,7 @@ $code = '404';
 $subtitle = 'Página Não Encontrada';
 $icon = '🔍';
 $message = 'A página que você está procurando não foi encontrada. Ela pode ter sido movida, renomeada ou não existe mais.';
+
 $actions = [
     [
         'url' => '/',

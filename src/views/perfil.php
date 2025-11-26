@@ -23,7 +23,6 @@ if (!isset($usuario)) {
     ];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -33,6 +32,7 @@ if (!isset($usuario)) {
     <title><?php echo $pageTitle; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/assets/css/perfil.css">
 </head>
 
@@ -339,9 +339,14 @@ if (!isset($usuario)) {
         </div>
     </div>
 
-   <script src="/assets/js/perfil.js"></script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/pt-BR.js"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
+    <script src="/assets/js/perfil.js"></script>
 
     <?php $this->renderComponent('footer'); ?>
 </body>
-
 </html>

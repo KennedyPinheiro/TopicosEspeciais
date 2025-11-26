@@ -1,5 +1,5 @@
 <?php
-$errorCode = $_GET['code'] ?? 'Erro';
+$errorCode = $_GET['code'] ?? '500';
 $errorMessage = $_GET['message'] ?? 'Ocorreu um erro inesperado no sistema.';
 $errorTitle = $_GET['title'] ?? 'Erro';
 
@@ -31,8 +31,18 @@ $actions = [
         'url' => 'javascript:history.back()',
         'icon' => 'fas fa-arrow-left',
         'text' => 'Voltar'
+    ],
+    [
+        'url' => '/contato',
+        'icon' => 'fas fa-envelope',
+        'text' => 'Suporte'
     ]
 ];
+
+$debug = '';
+if (defined('APP_DEBUG') && APP_DEBUG) {
+    $debug = $_GET['debug'] ?? '';
+}
 
 include 'layout.php';
 ?>

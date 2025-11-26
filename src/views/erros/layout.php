@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="error-page">
-        <div class="error-card">
+        <div class="error-card <?= 'error-' . ($code ?? '500') ?>">
             <div class="error-header">
                 <div class="error-icon">
                     <?= $icon ?? '❌' ?>
@@ -24,7 +24,7 @@
                 <div class="error-actions">
                     <?php if (!empty($actions)): ?>
                         <?php foreach ($actions as $action): ?>
-                            <a href="<?= $action['url'] ?>" class="btn-error">
+                            <a href="<?= $action['url'] ?>" class="btn-error" <?= isset($action['target']) ? 'target="' . $action['target'] . '"' : '' ?>>
                                 <?php if (!empty($action['icon'])): ?>
                                     <i class="<?= $action['icon'] ?> me-2"></i>
                                 <?php endif; ?>
@@ -43,9 +43,9 @@
                     <?php endif; ?>
                 </div>
                 
-                <?php if (!empty($debug) && APP_DEBUG): ?>
-                    <div class="mt-4 p-3 bg-light rounded text-start">
-                        <small class="text-muted">
+                <?php if (!empty($debug) && (APP_DEBUG ?? false)): ?>
+                    <div class="debug-info">
+                        <small>
                             <strong>Debug Info:</strong><br>
                             <?= nl2br(htmlspecialchars($debug)) ?>
                         </small>
@@ -56,5 +56,26 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Adicionar loading state nos botões
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn-error');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === 'javascript:history.back()') {
+                        return;
+                    }
+                    
+                    if (!this.getAttribute('href').startsWith('javascript:')) {
+                        this.classList.add('loading');
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,127 +1,63 @@
-:root {
-  --primary-dark: #0f172a;
-  --primary-medium: #1e293b;
-  --primary-light: #334155;
-  --accent-color: #3b82f6;
-  --accent-hover: #2563eb;
-  --text-light: #f8fafc;
-  --text-muted: #94a3b8;
-  --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
-  --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
-}
-
-.full-width-header {
-  background: linear-gradient(
-    135deg,
-    var(--primary-dark) 0%,
-    var(--primary-medium) 100%
-  );
-  margin-bottom: 2rem;
-}
-
-.full-width-header .container-fluid {
-  padding: 0;
-}
-
-.full-width-header .bg-gradient-primary {
-  background: transparent !important;
-  border-radius: 0 !important;
-}
-
-.bg-gradient-primary {
-  background: linear-gradient(
-    135deg,
-    var(--primary-dark) 0%,
-    var(--primary-medium) 100%
-  ) !important;
-  border: none;
-}
+@import url('header.css');
 
 .product-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
 .card-img-container {
-  overflow: hidden;
-  border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
 }
 
 .card-img-top {
-  transition: transform 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .product-card:hover .card-img-top {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 .bg-gradient-dark {
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  border: none;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border: none;
 }
 
 .card-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
 }
 
-@media (min-width: 1400px) {
-  .container-fluid.px-4 {
-    padding-left: 3rem !important;
-    padding-right: 3rem !important;
-  }
+.stats-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: none;
+    border-radius: 12px;
 }
 
-@media (min-width: 1200px) {
-  .container-fluid.px-4 {
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-  }
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
 }
- .select2-container--default .select2-selection--single {
-            border: 1px solid #ced4da;
-            border-radius: 0.375rem;
-            height: 45px;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 43px;
-            padding-left: 12px;
-            font-size: 14px;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 43px;
-        }
-        .select2-container--default .select2-results__option--highlighted[aria-selected] {
-            background-color: #007bff;
-        }
-        .venda-item {
-            border-left: 4px solid #007bff;
-            transition: all 0.3s ease;
-        }
-        .venda-item:hover {
-            background-color: #f8f9fa;
-            border-left-color: #0056b3;
-        }
-        .card-venda {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            background: white;
-        }
-        .card-venda:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .total-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .estoque-badge {
-            font-size: 0.75rem;
-        }
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quick-action {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.quick-action:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-dark);
+    border-color: var(--accent-color);
+}
