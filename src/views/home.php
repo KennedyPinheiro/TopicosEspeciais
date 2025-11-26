@@ -1,3 +1,8 @@
+<?php
+require_once '/var/www/site2.com/public_html/app/Services/PaginationService.php';
+
+$produtosDestaque = PaginationService::getProdutosMaisCaros($produtos, 8);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -41,12 +46,13 @@
                 <div class="col-12">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="h4 mb-0 fw-bold text-dark">Produtos em Destaque</h2>
-                        <span class="badge bg-secondary bg-opacity-10 text-secondary fs-6 border">
-                            <?= count($produtos) ?> produtos
+                        <span class="badge bg-warning bg-opacity-10 text-warning fs-6 border">
+                            <i class="fas fa-crown me-1"></i>
+                            Top 8 Mais Caros
                         </span>
                     </div>
 
-                    <?php if (empty($produtos)): ?>
+                    <?php if (empty($produtosDestaque)): ?>
                         <div class="text-center py-5">
                             <div class="mb-4">
                                 <span class="iconify" data-icon="mdi:package-variant-remove" data-width="80" data-height="80" style="color: #6c757d;"></span>
@@ -60,23 +66,25 @@
                         </div>
                     <?php else: ?>
                         <div class="row g-4">
-                            <?php foreach ($produtos as $produto): ?>
-                                <?php
-                                // Inclui o card de produto passando os dados
-                                $this->renderComponent('card-produto', ['produto' => $produto]);
-                                ?>
+                            <?php foreach ($produtosDestaque as $produto): ?>
+                                <?php $this->renderComponent('card-produto', ['produto' => $produto]); ?>
                             <?php endforeach; ?>
                         </div>
 
-                        <?php if (count($produtos) >= 12): ?>
+                        <?php if (count($produtos) > 8): ?>
                             <div class="text-center mt-5">
                                 <a href="/produtos" class="btn btn-outline-primary btn-lg">
                                     <span class="iconify" data-icon="mdi:arrow-right" data-width="16" data-height="16"></span>
-                                    Ver Todos os Produtos
+                                    Ver Todos os <?= count($produtos) ?> Produtos
                                 </a>
                             </div>
                         <?php endif; ?>
                     <?php endif; ?>
+                    <?php foreach ($produtos as $produto): ?>
+                        <?php if ($produto['quantidade'] > 0): ?>
+                            <?php $this->renderComponent('modal-venda', ['produto' => $produto]); ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
@@ -116,6 +124,16 @@
                                             <small class="text-muted">Sem Estoque</small>
                                         </div>
                                     </div>
+
+                                    <?php if (!empty($produtosDestaque)): ?>
+                                        <div class="mt-3 pt-3 border-top">
+                                            <small class="text-muted">
+                                                <i class="fas fa-crown text-warning me-1"></i>
+                                                Produto mais caro:
+                                                <strong>R$ <?= number_format($produtosDestaque[0]['preco'] ?? 0, 2, ',', '.') ?></strong>
+                                            </small>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

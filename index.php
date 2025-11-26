@@ -1,6 +1,8 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log');
 session_start();
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -9,6 +11,7 @@ use App\Controllers\AuthController;
 use App\Controllers\ProductController;
 use App\Controllers\HomeController;
 use App\Controllers\ProfileController;
+use App\Controllers\VendaController; 
 use App\Middleware\AuthMiddleware;
 
 $host = 'localhost';
@@ -28,6 +31,7 @@ $authController = new AuthController($pdo);
 $productController = new ProductController($pdo);
 $homeController = new HomeController($pdo);
 $profileController = new ProfileController($pdo);
+$vendaController = new VendaController($pdo); 
 
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
@@ -109,6 +113,36 @@ switch ($clean_path) {
         $productController->excluir();
         break;
 
+    case 'vendas':
+        AuthMiddleware::checkAuth();
+        $vendaController->index();
+        break;
+
+    case 'vendas/registrar':
+        AuthMiddleware::checkAuth();
+        $vendaController->registrar();
+        break;
+
+    case 'vendas/relatorio':
+        AuthMiddleware::checkAuth();
+        $vendaController->relatorio();
+        break;
+
+    case 'vendas/estornar':
+        AuthMiddleware::checkAuth();
+        $vendaId = $_POST['venda_id'] ?? $_GET['id'] ?? null;
+        if (!$vendaId) {
+            header('Location: /erro/400?message=' . urlencode('ID da venda não informado'));
+            exit;
+        }
+        $vendaController->estornar($vendaId);
+        break;
+
+    case 'api/vendas/hoje':
+        AuthMiddleware::checkAuth();
+        $vendaController->apiVendasHoje();
+        break;
+
     case 'sobre':
         AuthMiddleware::checkAuth();
         $aboutController = new HomeController($pdo);
@@ -156,30 +190,29 @@ switch ($clean_path) {
         break;
 
     case 'erro/404':
-        $this->showErrorPage(404);
+        showErrorPage(404);
         break;
 
     case 'erro/500':
-        $this->showErrorPage(500);
+        showErrorPage(500);
         break;
 
     case 'erro/403':
-        $this->showErrorPage(403);
+        showErrorPage(403);
         break;
 
     case 'erro/400':
-        $this->showErrorPage(400);
+        showErrorPage(400);
         break;
 
     case 'erro/geral':
-        $this->showErrorPage('geral');
+        showErrorPage('geral');
         break;
 
     default:
         header('Location: /erro/404');
         exit;
 }
-
 
 function showErrorPage($errorCode = 500) {
     $errorFile = __DIR__ . "/src/views/erros/{$errorCode}.php";

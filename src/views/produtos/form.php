@@ -199,7 +199,7 @@ $subtitulo = match ($modo) {
                                     <?php else: ?>
                                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
                                             <a href="/produtos" class="btn btn-outline-secondary btn-lg px-4">Voltar</a>
-                                            <a href="/produtos/editar/<?= $form_data['id'] ?>" class="btn btn-primary btn-lg px-4">
+                                            <a href="/produtos/editar?id=<?= $produto['id'] ?>" class="btn btn-primary btn-lg px-4">
                                                 <span class="iconify" data-icon="mdi:pencil" data-width="20" data-height="20"></span>
                                                 Editar Produto
                                             </a>

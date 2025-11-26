@@ -33,6 +33,12 @@ $currentPage = $currentPage ?? 'home';
                 <span>Produtos</span>
             </a>
         </li>
+        <li>
+            <a href="/vendas" class="nav-link <?php echo $currentPage === 'vendas' ? 'nav-active' : ''; ?>">
+                <span class="iconify" data-icon="mdi:cart" data-width="18" data-height="18"></span>
+                <span>Vendas</span>
+            </a>
+        </li>
 
         <li class="profile-dropdown desktop-only">
             <div class="profile-btn">
@@ -47,7 +53,6 @@ $currentPage = $currentPage ?? 'home';
             <div class="dropdown-content">
                 <div class="dropdown-header">
                     <span class="user-fullname"><?php echo htmlspecialchars($nome_usuario); ?></span>
-                    <span class="user-role">Administrador</span>
                 </div>
                 <div class="dropdown-divider"></div>
                 <a href="/perfil" class="dropdown-item <?php echo $currentPage === 'perfil' ? 'dropdown-active' : ''; ?>">
@@ -484,7 +489,7 @@ $currentPage = $currentPage ?? 'home';
                     setTimeout(() => {
                         dropdownContent.style.display = 'none';
                     }, 300);
-                }, 1000); 
+                }, 1000);
             });
 
             dropdownContent.addEventListener('mouseenter', function() {

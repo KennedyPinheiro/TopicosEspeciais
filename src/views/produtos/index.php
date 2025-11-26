@@ -2,7 +2,14 @@
 $sucesso = $this->getFlash('sucesso') ?? '';
 $erro = $this->getFlash('erro') ?? '';
 $msg = $this->getFlash('msg') ?? '';
+
+require_once '/var/www/site2.com/public_html/app/Services/PaginationService.php';
+
+$termoBusca = PaginationService::getTermoBusca();
+$paginacao = PaginationService::paginar($produtos, 15, $termoBusca);
+$produtosPaginados = $paginacao['dados'];
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -78,14 +85,32 @@ $msg = $this->getFlash('msg') ?? '';
 
             <div class="card border-0 shadow-lg mt-3">
                 <div class="card-header bg-light border-0 py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0 fw-bold text-dark">
-                            <span class="iconify" data-icon="mdi:package-variant" data-width="24" data-height="24"></span>
-                            Lista de Produtos
-                        </h5>
-                        <span class="badge bg-secondary bg-opacity-10 text-secondary border">
-                            <?= count($produtos) ?> produtos
-                        </span>
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="card-title mb-0 fw-bold text-dark">
+                                <span class="iconify" data-icon="mdi:package-variant" data-width="24" data-height="24"></span>
+                                Lista de Produtos
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <form method="GET" action="" class="d-flex">
+                                <div class="input-group">
+                                    <input type="text" 
+                                           name="busca" 
+                                           class="form-control" 
+                                           placeholder="Buscar por nome, descrição ou SKU..."
+                                           value="<?= htmlspecialchars($termoBusca) ?>">
+                                    <?php if (!empty($termoBusca)): ?>
+                                        <a href="?" class="btn btn-outline-secondary" type="button">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -101,37 +126,55 @@ $msg = $this->getFlash('msg') ?? '';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($produtos)): ?>
+                                <?php if (empty($produtosPaginados)): ?>
                                     <tr>
                                         <td colspan="5" class="text-center text-muted py-5">
                                             <div class="py-4">
                                                 <span class="iconify" data-icon="mdi:package-variant-remove" data-width="64" data-height="64" style="color: #6c757d;"></span>
-                                                <h5 class="mt-3 text-muted">Nenhum produto cadastrado</h5>
-                                                <p class="text-muted mb-0">Comece adicionando produtos ao sistema.</p>
-                                                <a href="/produtos/adicionar" class="btn btn-primary mt-3">
-                                                    <span class="iconify" data-icon="mdi:plus" data-width="18" data-height="18"></span>
-                                                    Adicionar Primeiro Produto
-                                                </a>
+                                                <h5 class="mt-3 text-muted">
+                                                    <?= empty($termoBusca) ? 'Nenhum produto cadastrado' : 'Nenhum produto encontrado' ?>
+                                                </h5>
+                                                <p class="text-muted mb-0">
+                                                    <?= empty($termoBusca) 
+                                                        ? 'Comece adicionando produtos ao sistema.' 
+                                                        : 'Tente ajustar os termos da busca.' ?>
+                                                </p>
+                                                <?php if (empty($termoBusca)): ?>
+                                                    <a href="/produtos/adicionar" class="btn btn-primary mt-3">
+                                                        <span class="iconify" data-icon="mdi:plus" data-width="18" data-height="18"></span>
+                                                        Adicionar Primeiro Produto
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a href="?" class="btn btn-outline-primary mt-3">
+                                                        Limpar Busca
+                                                    </a>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($produtos as $produto): ?>
+                                    <?php foreach ($produtosPaginados as $produto): ?>
                                         <?php $this->renderComponent('produto', ['produto' => $produto]); ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
+
+                    <?= PaginationService::gerarLinksPaginacao($paginacao) ?>
                 </div>
                 
-                <?php if (!empty($produtos)): ?>
+                <?php if (!empty($produtosPaginados)): ?>
                     <div class="card-footer bg-light border-0 py-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                Mostrando <?= count($produtos) ?> produto(s)
+                                Mostrando <?= count($produtosPaginados) ?> de <?= $paginacao['totalItens'] ?> produto(s)
+                                <?php if (!empty($termoBusca)): ?>
+                                    <span class="badge bg-info ms-2">Filtrado</span>
+                                <?php endif; ?>
                             </small>
                             <small class="text-muted">
+                                Página <?= $paginacao['paginaAtual'] ?> de <?= $paginacao['totalPaginas'] ?> |
                                 Última atualização: <?= date('d/m/Y H:i') ?>
                             </small>
                         </div>

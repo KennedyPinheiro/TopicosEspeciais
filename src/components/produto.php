@@ -1,7 +1,5 @@
 <?php
-// components/produto.php
 
-// Este componente recebe $produto automaticamente do controller
 ?>
 <tr>
     <td>
