@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Product;
+use App\Services\EncryptionService;
 use App\Services\ProductService;
 
 class ProductController extends BaseController
@@ -15,6 +16,7 @@ class ProductController extends BaseController
         $productModel = new Product($pdo);
         $this->productService = new ProductService($productModel);
     }
+
     public function dashboard()
     {
         try {
@@ -22,6 +24,7 @@ class ProductController extends BaseController
             $withStock = $this->productService->getProductsWithStockCount();
             $withoutStock = $this->productService->getProductsWithoutStockCount();
             $recentProducts = $this->productService->getRecentProducts(5);
+            $this->encryptionService = new EncryptionService();
 
             $pageTitle = 'Dashboard de Produtos - Sistema IF';
             $currentPage = 'dashboard';
@@ -38,6 +41,7 @@ class ProductController extends BaseController
             $this->handleException($e, 'Erro ao carregar dashboard');
         }
     }
+
     public function index()
     {
         try {
@@ -45,6 +49,9 @@ class ProductController extends BaseController
             $pageTitle = 'Produtos - Sistema IF';
             $currentPage = 'produtos';
 
+            foreach ($produtos as &$produto) {
+                $produto['encrypted_id'] = $this->encryptId($produto['id']);
+            }
             $this->render('produtos/index', compact('produtos', 'pageTitle', 'currentPage'));
         } catch (\Exception $e) {
             $this->handleException($e, 'Erro ao carregar produtos');
@@ -72,13 +79,13 @@ class ProductController extends BaseController
                 header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
                 exit;
             }
-
-            $produto = $this->productService->getProductById($id);
+            $decryptedId = $this->processId($id);
+            $produto = $this->productService->getProductById($decryptedId);
             if (!$produto) {
                 header('Location: /erro/404?message=' . urlencode('Produto não encontrado'));
                 exit;
             }
-
+            $produto['encrypted_id'] = $this->encryptId($decryptedId);
             $pageTitle = 'Visualizar Produto - Sistema IF';
             $currentPage = 'produtos';
             $modo = 'visualizar';
@@ -96,13 +103,16 @@ class ProductController extends BaseController
                 header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
                 exit;
             }
+            $decryptedId = $this->processId($id);
 
-            $produto = $this->productService->getProductById($id);
+            $produto = $this->productService->getProductById($decryptedId);
+
             if (!$produto) {
                 header('Location: /erro/404?message=' . urlencode('Produto não encontrado'));
                 exit;
             }
 
+            $produto['encrypted_id'] = $this->encryptId($decryptedId);
             $pageTitle = 'Editar Produto - Sistema IF';
             $currentPage = 'produtos';
             $modo = 'editar';
@@ -150,12 +160,21 @@ class ProductController extends BaseController
                 exit;
             }
 
-            $id = $_POST['id'] ?? null;
-            if (!$id) {
+            $encryptedId = $_POST['encrypted_id'];
+
+            if (!$encryptedId && isset($_SERVER['HTTP_REFERER'])) {
+                $referer = $_SERVER['HTTP_REFERER'];
+                if (preg_match('/[?&]id=([^&]+)/', $referer, $matches)) {
+                    $encryptedId = $matches[1];
+                }
+            }
+
+            if (!$encryptedId) {
                 header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
                 exit;
             }
 
+            $id = $this->processId($encryptedId);
             $file = $_FILES['imagem'] ?? null;
             $result = $this->productService->updateProduct($id, $_POST, $file);
 
@@ -169,7 +188,7 @@ class ProductController extends BaseController
                 $this->setFlash('form_data', $result['old_data']);
                 $this->setFlash('msg', implode(', ', $result['errors']));
 
-                header("Location: /produtos/editar?id={$id}");
+                header("Location: /produtos/editar?id={$encryptedId}");
                 exit;
             }
         } catch (\Exception $e) {
@@ -185,12 +204,14 @@ class ProductController extends BaseController
                 exit;
             }
 
-            $id = $_POST['id'] ?? null;
-            if (!$id) {
+            $encryptedId = $_POST['encrypted_id'];
+
+            if (!$encryptedId) {
                 header('Location: /erro/400?message=' . urlencode('ID do produto não informado'));
                 exit;
             }
 
+            $id = $this->processId($encryptedId);
             $result = $this->productService->deleteProduct($id);
 
             if ($result['success']) {
@@ -207,11 +228,8 @@ class ProductController extends BaseController
         }
     }
 
-
     private function handleException(\Exception $e, string $context = 'Erro')
     {
-        error_log("{$context}: " . $e->getMessage());
-
         $message = urlencode("{$context}: " . $e->getMessage());
 
         if (
@@ -233,38 +251,5 @@ class ProductController extends BaseController
             header('Location: /erro/500?error=' . $message);
         }
         exit;
-    }
-    public function renderModaisTermos()
-    {
-        echo '
-        <!-- Modal Termos de Uso -->
-        <div class="modal fade" id="termosUsoModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Termos de Uso - Produtos</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Termos de uso específicos para o gerenciamento de produtos...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Política de Privacidade -->
-        <div class="modal fade" id="politicaPrivacidadeModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Política de Privacidade - Produtos</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Política de privacidade para dados de produtos...</p>
-                    </div>
-                </div>
-            </div>
-        </div>';
     }
 }

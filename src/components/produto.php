@@ -1,6 +1,3 @@
-<?php
-
-?>
 <tr>
     <td>
         <div class="d-flex align-items-center gap-2">
@@ -45,30 +42,34 @@
 
     <td class="text-center">
         <div class="d-flex gap-2 justify-content-center">
-            <a href="/produtos/visualizar?id=<?= $produto['id'] ?>"
+            <a href="/produtos/visualizar?id=<?= $produto['encrypted_id'] ?>"
                 class="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 32px; height: 32px;"
+                name="encrypted_id"
                 title="Visualizar">
                 <span class="iconify" data-icon="mdi:eye-outline" data-width="16" data-height="16"></span>
             </a>
 
-            <a href="/produtos/editar?id=<?= $produto['id'] ?>"
+            <a href="/produtos/editar?id=<?php echo $produto['encrypted_id']; ?>"
                 class="btn btn-sm btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 32px; height: 32px;"
+                name="encrypted_id"
                 title="Editar">
                 <span class="iconify" data-icon="mdi:pencil-outline" data-width="16" data-height="16"></span>
             </a>
 
-            <form action="/produtos/excluir" method="POST" class="d-inline">
-                <input type="hidden" name="id" value="<?= $produto['id'] ?>">
-                <button type="submit"
+            <form action="/produtos/excluir" method="POST" class="d-inline" id="form-excluir-<?= $produto['encrypted_id'] ?>">
+                <input type="hidden" name="encrypted_id" value="<?= $produto['encrypted_id'] ?>">
+                <button type="button"
                     class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center"
                     style="width: 32px; height: 32px;"
-                    onclick="return confirm('Tem certeza que deseja excluir o produto \'<?= addslashes($produto['nome']) ?>\'? Esta ação não pode ser desfeita.')"
+                    onclick="confirmarExclusaoSweet('<?= addslashes($produto['nome']) ?>', '<?= $produto['encrypted_id'] ?>')"
                     title="Excluir">
                     <span class="iconify" data-icon="mdi:trash-can-outline" data-width="16" data-height="16"></span>
                 </button>
             </form>
+
         </div>
     </td>
+
 </tr>

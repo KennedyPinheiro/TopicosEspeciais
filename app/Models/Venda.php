@@ -92,6 +92,7 @@ class Venda
         $stmt->execute([$dataInicio, $dataFim]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
+    
 
      public function totalVendasHoje(): float
     {

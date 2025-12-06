@@ -68,3 +68,4 @@ function getTermoBusca(): string
 {
     return $_GET['busca'] ?? '';
 }
+

@@ -2,13 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Services\EncryptionService;
+use App\Services\ProductService;
+
 class BaseController
 {
     protected $pdo;
+    protected $encryptionService;
 
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
+        $this->encryptionService = new EncryptionService();
     }
 
     protected function render(string $view, array $data = [])
@@ -59,7 +64,44 @@ class BaseController
         unset($_SESSION['flash_messages'][$key]);
         return $value;
     }
+    protected function encryptId($id)
+    {
+        return $this->encryptionService->encryptId($id);
+    }
+    protected function decryptId($encryptedId)
+    {
+        $id = $this->encryptionService->decryptId($encryptedId);
+        if (!$id) {
+            throw new \Exception('ID inválido ou corrompido');
+        }
+        return $id;
+    }
 
+    protected function isEncryptedId($string)
+    {
+        return $this->encryptionService->isEncryptedId($string);
+    }
+    protected function processId($id)
+{
+    error_log("=== PROCESS ID DEBUG ===");
+    error_log("Input: " . $id);
+    error_log("Type: " . gettype($id));
+    
+    if ($this->isEncryptedId($id)) {
+        error_log("É criptografado - descriptografando...");
+        $decrypted = $this->decryptId($id);
+        error_log("Resultado descriptografado: " . $decrypted);
+        return $decrypted;
+    }
+    
+    if (is_numeric($id)) {
+        error_log("É numérico - convertendo para int");
+        return (int)$id;
+    }
+    
+    error_log("ERRO: ID inválido");
+    throw new \Exception('ID inválido');
+}
     protected function redirect(string $url)
     {
         try {

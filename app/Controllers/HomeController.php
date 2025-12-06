@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Models\Contact;
 use App\Models\Product;
+use App\Models\Venda;
 use App\Services\ContactService;
 use PDO;
 
@@ -11,26 +13,30 @@ class HomeController extends BaseController
 
     public function __construct(PDO $pdo)
     {
-        parent::__construct($pdo); 
+        parent::__construct($pdo);
     }
 
     public function index()
     {
         try {
-            $productModel = new Product($this->pdo); 
-            
-            $produtos = $productModel->findAll(); 
+            $productModel = new Product($this->pdo);
+            $vendaModel = new Venda($this->pdo);
+
+            $produtos = $productModel->findAll();
             $totalProdutos = count($produtos);
             $comEstoque = 0;
             $semEstoque = 0;
-            
-            foreach ($produtos as $produto) {
+
+
+            foreach ($produtos as &$produto) {
                 if ($produto['quantidade'] > 0) {
                     $comEstoque++;
                 } else {
                     $semEstoque++;
                 }
+                $produto['encrypted_id'] = $this->encryptId($produto['id']);
             }
+            $estatisticasDia = $this->getEstatisticasDia($vendaModel);
 
             $this->render('home', [
                 'currentPage' => 'home',
@@ -38,20 +44,51 @@ class HomeController extends BaseController
                 'produtos' => $produtos,
                 'totalProdutos' => $totalProdutos,
                 'comEstoque' => $comEstoque,
-                'semEstoque' => $semEstoque
+                'semEstoque' => $semEstoque,
+                'estatisticasDia' => $estatisticasDia
             ]);
-            
         } catch (\Exception $e) {
             $this->handleError($e, 'Erro ao carregar página inicial');
         }
     }
+    private function getEstatisticasDia(Venda $vendaModel): array
+    {
+        try {
+            $dataHoje = date('Y-m-d');
+            $vendasHoje = $vendaModel->listarPorPeriodo($dataHoje, $dataHoje);
 
-      public function sobre()
+            $totalVendas = count($vendasHoje);
+            $faturamento = 0;
+            $produtosVendidos = 0;
+
+            foreach ($vendasHoje as $venda) {
+                $faturamento += ($venda['preco_unitario'] * $venda['quantidade']);
+                $produtosVendidos += $venda['quantidade'];
+            }
+
+            return [
+                'total_vendas' => $totalVendas,
+                'faturamento' => $faturamento,
+                'produtos_vendidos' => $produtosVendidos,
+                'data' => $dataHoje
+            ];
+        } catch (\Exception $e) {
+            error_log("Erro ao buscar estatísticas do dia: " . $e->getMessage());
+            return [
+                'total_vendas' => 0,
+                'faturamento' => 0,
+                'produtos_vendidos' => 0,
+                'data' => date('Y-m-d')
+            ];
+        }
+    }
+
+    public function sobre()
     {
         try {
             $pageTitle = 'Sobre - Sistema IF';
             $currentPage = 'sobre';
-            
+
             $infoSistema = [
                 'versao' => '1.0.0',
                 'desenvolvedor' => 'Kennedy Pinheiro',
@@ -59,16 +96,15 @@ class HomeController extends BaseController
                 'ano' => date('Y'),
                 'tecnologias' => ['PHP', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Bootstrap 5']
             ];
-            
+
             $this->render('sobre', compact('pageTitle', 'currentPage', 'infoSistema'));
-            
         } catch (\Exception $e) {
             $this->handleError($e, 'Erro ao carregar página sobre');
         }
     }
-  
 
-   public function logout()
+
+    public function logout()
     {
         try {
             setcookie('nome_usuario', '', [
@@ -90,7 +126,6 @@ class HomeController extends BaseController
             session_destroy();
 
             $this->redirect('/login');
-            
         } catch (\Exception $e) {
             error_log("Erro durante logout: " . $e->getMessage());
             session_destroy();
@@ -98,7 +133,7 @@ class HomeController extends BaseController
         }
     }
 
-     public function telaLogout()
+    public function telaLogout()
     {
         try {
             if (!isset($_SESSION['usuario_id'])) {
@@ -110,49 +145,46 @@ class HomeController extends BaseController
                 'pageTitle' => 'Sair - Sistema IF',
                 'nome_usuario' => $_SESSION['usuario_nome'] ?? 'Usuário'
             ]);
-            
         } catch (\Exception $e) {
             $this->handleError($e, 'Erro ao carregar tela de logout');
         }
     }
 
-     public function contato()
-{
-    try {
-        $pageTitle = 'Contato - Sistema IF';
-        $currentPage = 'contato';
-        
-        $this->render('contato', compact('pageTitle', 'currentPage'));
-        
-    } catch (\Exception $e) {
-        $this->handleError($e, 'Erro ao carregar página de contato');
+    public function contato()
+    {
+        try {
+            $pageTitle = 'Contato - Sistema IF';
+            $currentPage = 'contato';
+
+            $this->render('contato', compact('pageTitle', 'currentPage'));
+        } catch (\Exception $e) {
+            $this->handleError($e, 'Erro ao carregar página de contato');
+        }
     }
-}
 
     public function processarContato()
-{
-    try {
-        $this->validateMethod('POST');
+    {
+        try {
+            $this->validateMethod('POST');
 
-        $contactModel = new Contact($this->pdo);
-        $contactService = new ContactService($contactModel);
+            $contactModel = new Contact($this->pdo);
+            $contactService = new ContactService($contactModel);
 
-        $result = $contactService->processContact($this->getPostData());
+            $result = $contactService->processContact($this->getPostData());
 
-        if ($result['success']) {
-            $this->setFlash('sucesso', 'mensagem_enviada');
-        } else {
-            $this->setFlash('erro', 'campos_invalidos');
-            $this->setFlash('form_errors', $result['errors']);
-            $this->setFlash('form_data', $result['form_data']);
+            if ($result['success']) {
+                $this->setFlash('sucesso', 'mensagem_enviada');
+            } else {
+                $this->setFlash('erro', 'campos_invalidos');
+                $this->setFlash('form_errors', $result['errors']);
+                $this->setFlash('form_data', $result['form_data']);
+            }
+
+            $this->redirect('/contato');
+        } catch (\Exception $e) {
+            $this->handleError($e, 'Erro ao processar formulário de contato');
         }
-
-        $this->redirect('/contato');
-        
-    } catch (\Exception $e) {
-        $this->handleError($e, 'Erro ao processar formulário de contato');
     }
-}
 
     private function validarDadosContato($dados)
     {
@@ -193,7 +225,6 @@ class HomeController extends BaseController
                 'dados' => $dadosValidados,
                 'erros' => $erros
             ];
-            
         } catch (\Exception $e) {
             error_log("Erro na validação de contato: " . $e->getMessage());
             return [
@@ -214,9 +245,9 @@ class HomeController extends BaseController
             error_log("Mensagem: " . ($dados['mensagem'] ?? 'N/A'));
             error_log("IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'N/A'));
             error_log("Data/Hora: " . date('d/m/Y H:i:s'));
-            
+
             $sucesso = true;
-            
+
             if ($sucesso) {
                 error_log("Contato processado com sucesso");
                 return true;
@@ -224,7 +255,6 @@ class HomeController extends BaseController
                 error_log("Falha no processamento do contato");
                 return false;
             }
-            
         } catch (\Exception $e) {
             error_log("Erro ao processar contato: " . $e->getMessage());
             return false;

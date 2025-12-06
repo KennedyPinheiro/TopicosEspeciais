@@ -2,6 +2,7 @@
 function ModaisTermos()
 {
     ob_start();
+    $dataAtual = date('d/m/Y');
 ?>
 
     <div class="modal fade" id="termosUsoModal" tabindex="-1" aria-labelledby="termosUsoModalLabel" aria-hidden="true">
@@ -19,7 +20,7 @@ function ModaisTermos()
                         <div class="text-center mb-4">
                             <span class="iconify text-primary mb-3" data-icon="mdi:shield-check" data-width="48" data-height="48"></span>
                             <h4 class="fw-bold text-primary">Termos de Uso do Sistema IF</h4>
-                            <p class="text-muted">Última atualização: ' . date('d/m/Y') . '</p>
+                            <p class="text-muted">Última atualização: <?php echo $dataAtual; ?></p>
                         </div>
 
                         <div class="terms-section mb-4">
@@ -116,7 +117,6 @@ function ModaisTermos()
         </div>
     </div>
 
-    <!-- Modal Política de Privacidade -->
     <div class="modal fade" id="politicaPrivacidadeModal" tabindex="-1" aria-labelledby="politicaPrivacidadeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -132,7 +132,7 @@ function ModaisTermos()
                         <div class="text-center mb-4">
                             <span class="iconify text-primary mb-3" data-icon="mdi:lock" data-width="48" data-height="48"></span>
                             <h4 class="fw-bold text-primary">Política de Privacidade</h4>
-                            <p class="text-muted">Última atualização: ' . date('d/m/Y') . '</p>
+                            <p class="text-muted">Última atualização: <?php echo $dataAtual; ?></p>
                         </div>
 
                         <div class="privacy-section mb-4">
@@ -251,7 +251,7 @@ function ModaisTermos()
                         <span class="iconify" data-icon="mdi:close" data-width="16" data-height="16"></span>
                         Fechar
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="printTerms('termosUsoModal')">
+                    <button type="button" class="btn btn-primary" onclick="printTerms('politicaPrivacidadeModal')">
                         <span class="iconify" data-icon="mdi:printer" data-width="16" data-height="16"></span>
                         Imprimir
                     </button>
@@ -339,19 +339,16 @@ function ModaisTermos()
             const modalElement = document.getElementById(modalId);
             const modalContent = modalElement.querySelector(".modal-content").cloneNode(true);
 
-            // Remove botões do footer na versão impressa
             const modalFooter = modalContent.querySelector(".modal-footer");
             if (modalFooter) {
                 modalFooter.remove();
             }
 
-            // Remove botão fechar do header
             const closeButton = modalContent.querySelector(".btn-close");
             if (closeButton) {
                 closeButton.remove();
             }
 
-            // Cria uma nova janela para impressão
             const printWindow = window.open("", "_blank");
             printWindow.document.write(`
                 <!DOCTYPE html>
@@ -395,14 +392,12 @@ function ModaisTermos()
             printWindow.document.close();
             printWindow.focus();
 
-            // Aguarda o carregamento completo antes de imprimir
             printWindow.onload = function() {
                 printWindow.print();
                 printWindow.close();
             };
         }
 
-        // Fechar modal com ESC
         document.addEventListener("keydown", function(event) {
             if (event.key === "Escape") {
                 const modals = document.querySelectorAll(".modal.show");

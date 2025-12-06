@@ -39,7 +39,19 @@ class VendaController extends BaseController
 
             $stmt->execute();
             $produtos = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
+              $produtosArray = [];
+        foreach ($produtos as $produto) {
+            $produtoArray = [
+                'id' => $produto->id,
+                'nome' => $produto->nome,
+                'preco' => $produto->preco,
+                'quantidade_estoque' => $produto->quantidade_estoque,
+                'sku' => $produto->sku,
+                'descricao' => $produto->descricao,
+                'encrypted_id' => $this->encryptId($produto->id) 
+            ];
+            $produtosArray[] = $produtoArray;
+            }
             error_log("✅ Produtos encontrados: " . count($produtos));
             if (!empty($produtos)) {
                 error_log("🔍 Primeiro produto: " . print_r($produtos[0], true));
@@ -60,7 +72,7 @@ class VendaController extends BaseController
 
             $this->render('vendas/index', [
                 'vendas' => $vendas,
-                'produtos' => $produtos,
+                'produtos' => $produtosArray,
                 'totalHoje' => $totalHoje,
                 'currentPage' => 'vendas',
                 'pageTitle' => 'Sistema de Vendas'
@@ -76,25 +88,27 @@ class VendaController extends BaseController
         $this->requireAuth();
         $this->validateMethod('POST');
 
-        try {
-            $postData = $this->getPostData();
-            $produtoId = (int) ($postData['produto_id'] ?? 0);
-            $quantidade = (int) ($postData['quantidade'] ?? 0);
-            $observacoes = $postData['observacoes'] ?? null;
-            $usuarioId = $_SESSION['usuario_id'] ?? null;
+       try {
+        $postData = $this->getPostData();
+        $produtoIdEncrypted = $postData['produto_id'] ?? ''; 
+        $quantidade = (int) ($postData['quantidade'] ?? 0);
+        $observacoes = $postData['observacoes'] ?? null;
+        $usuarioId = $_SESSION['usuario_id'] ?? null;
 
-            if ($produtoId <= 0 || $quantidade <= 0) {
-                $this->setFlash('erro', 'dados_invalidos');
-                $this->setFlash('msg', 'Produto e quantidade são obrigatórios');
-                $this->redirect('/vendas');
-            }
+        if (empty($produtoIdEncrypted) || $quantidade <= 0) {
+            $this->setFlash('erro', 'dados_invalidos');
+            $this->setFlash('msg', 'Produto e quantidade são obrigatórios');
+            $this->redirect('/vendas');
+        }
 
-            $resultado = $this->vendaService->registrarVenda([
-                'produto_id' => $produtoId,
-                'quantidade' => $quantidade,
-                'observacoes' => $observacoes,
-                'usuario_id' => $usuarioId
-            ]);
+        $produtoId = $this->processId($produtoIdEncrypted);
+    
+        $resultado = $this->vendaService->registrarVenda([
+            'produto_id' => $produtoId,
+            'quantidade' => $quantidade,
+            'observacoes' => $observacoes,
+            'usuario_id' => $usuarioId
+        ]);
 
             if ($resultado['sucesso']) {
                 $this->setFlash('sucesso', 'venda_registrada');

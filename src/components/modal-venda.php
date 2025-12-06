@@ -1,5 +1,4 @@
-<!-- Modal de Venda -->
-<div class="modal fade" id="vendaModal<?= $produto['id'] ?>" tabindex="-1">
+<div class="modal fade" id="vendaModal<?= $produto['encrypted_id'] ?>" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="/vendas/registrar" method="POST">
@@ -8,7 +7,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="produto_id" value="<?= $produto['id'] ?>">
+                    <input type="hidden" name="produto_id" value="<?= $produto['encrypted_id'] ?>">
                     
                     <div class="mb-3">
                         <label class="form-label"><strong>Produto:</strong></label>
@@ -35,8 +34,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="quantidade<?= $produto['id'] ?>" class="form-label">Quantidade *</label>
-                        <input type="number" class="form-control" id="quantidade<?= $produto['id'] ?>"
+                        <label for="quantidade<?= $produto['encrypted_id'] ?>" class="form-label">Quantidade *</label>
+                        <input type="number" class="form-control" id="quantidade<?= $produto['encrypted_id'] ?>"
                             name="quantidade" min="1" max="<?= $produto['quantidade'] ?>" value="1" required>
                         <div class="form-text">
                             Máximo: <?= $produto['quantidade'] ?> unidades disponíveis
@@ -44,8 +43,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="observacoes<?= $produto['id'] ?>" class="form-label">Observações (Opcional)</label>
-                        <textarea class="form-control" id="observacoes<?= $produto['id'] ?>"
+                        <label for="observacoes<?= $produto['encrypted_id'] ?>" class="form-label">Observações (Opcional)</label>
+                        <textarea class="form-control" id="observacoes<?= $produto['encrypted_id'] ?>"
                             name="observacoes" rows="2" placeholder="Observações sobre a venda..."></textarea>
                     </div>
                 </div>

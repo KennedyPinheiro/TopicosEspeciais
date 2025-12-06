@@ -16,9 +16,9 @@
     --info-color: #3b82f6;
     --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
     --shadow-medium: 0 4px 12px rgba(2, 6, 23, 0.2);
+    --border-radius: 12px;
 }
 
-/* Reset e base */
 * {
     margin: 0;
     padding: 0;
@@ -27,38 +27,41 @@
 
 body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: var(--text-light);
+    background: #ffffff; 
+    color: var(--text-dark);
     line-height: 1.6;
     min-height: 100vh;
-}
-
-/* Página de erro */
-.error-page {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem;
+}
+
+.error-page {
+    width: 100%;
+    max-width: 520px;
+    min-height: auto;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
 }
 
 .error-card {
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    max-width: 500px;
     width: 100%;
-    backdrop-filter: blur(10px);
+    position: relative;
 }
 
-/* Header do erro */
 .error-header {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
     color: var(--text-light);
-    padding: 3rem 2rem;
+    padding: 2.5rem;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -76,40 +79,38 @@ body {
 }
 
 .error-icon {
-    font-size: 4rem;
+    font-size: 3rem;
     margin-bottom: 1rem;
     display: block;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
 .error-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .error-subtitle {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     opacity: 0.9;
     font-weight: 500;
 }
 
-/* Body do erro */
 .error-body {
-    padding: 3rem 2rem;
+    padding: 2.5rem;
     text-align: center;
     background: white;
 }
 
 .error-message {
     color: var(--text-muted);
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
     line-height: 1.7;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
-/* Ações */
 .error-actions {
     display: flex;
     gap: 1rem;
@@ -119,9 +120,9 @@ body {
 }
 
 .btn-error {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 0.875rem 2rem;
     font-weight: 600;
     color: white;
@@ -130,167 +131,159 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    box-shadow: var(--shadow-light);
     min-width: 140px;
     border: 2px solid transparent;
+    font-size: 1rem;
 }
 
 .btn-error:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6);
+    box-shadow: var(--shadow-medium);
     color: white;
     text-decoration: none;
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--accent-hover), #1d4ed8);
 }
 
 .btn-error:active {
     transform: translateY(0);
 }
 
-/* Debug info */
 .debug-info {
-    background: #fef2f2;
-    border-radius: 10px;
-    padding: 1.5rem;
-    border-left: 4px solid #ef4444;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--danger-color);
     margin-top: 2rem;
     text-align: left;
 }
 
 .debug-info small {
-    color: #991b1b;
+    color: var(--text-dark);
     line-height: 1.5;
     font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.875rem;
 }
 
-/* Cores específicas para cada tipo de erro - Mantendo o tema vermelho */
 
-/* 404 - Página Não Encontrada */
 .error-404 .error-header {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
 }
 
 .error-404 .btn-error {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
 }
 
 .error-404 .btn-error:hover {
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.6);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #d97706, #b45309);
 }
 
-/* 403 - Acesso Negado */
 .error-403 .error-header {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);
 }
 
 .error-403 .btn-error {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, var(--danger-color), var(--danger-dark));
 }
 
 .error-403 .btn-error:hover {
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--danger-dark), #b91c1c);
 }
 
-/* 500 - Erro Interno */
 .error-500 .error-header {
     background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
 }
 
 .error-500 .btn-error {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
 }
 
 .error-500 .btn-error:hover {
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.6);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #6d28d9, #5b21b6);
 }
 
-/* 400 - Bad Request */
 .error-400 .error-header {
     background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
 }
 
 .error-400 .btn-error {
-    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+    background: linear-gradient(135deg, #d97706, #b45309);
 }
 
 .error-400 .btn-error:hover {
-    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.6);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #b45309, #92400e);
 }
 
-/* 503 - Serviço Indisponível */
 .error-503 .error-header {
     background: linear-gradient(135deg, #64748b 0%, #475569 100%);
 }
 
 .error-503 .btn-error {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+    background: linear-gradient(135deg, #64748b, #475569);
 }
 
 .error-503 .btn-error:hover {
-    box-shadow: 0 8px 20px rgba(100, 116, 139, 0.6);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #475569, #334155);
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
-    .error-page {
-        padding: 1rem;
-    }
-    
-    .error-header {
-        padding: 2.5rem 1.5rem;
-    }
-    
-    .error-body {
-        padding: 2.5rem 1.5rem;
-    }
-    
-    .error-title {
-        font-size: 2.5rem;
-    }
-    
-    .error-icon {
-        font-size: 3.5rem;
-    }
-}
-
-@media (max-width: 576px) {
     body {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        padding: 0.5rem;
     }
     
     .error-page {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        padding: 1rem;
+        padding: 0.5rem;
     }
     
     .error-header {
-        padding: 2rem 1rem;
+        padding: 2rem 1.5rem;
     }
     
     .error-body {
-        padding: 2rem 1rem;
+        padding: 2rem 1.5rem;
     }
     
     .error-title {
         font-size: 2rem;
     }
     
+    .error-icon {
+        font-size: 2.5rem;
+    }
+    
     .error-subtitle {
-        font-size: 1.1rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        background: #ffffff;
+        padding: 0.5rem;
+    }
+    
+    .error-page {
+        padding: 0.5rem;
+    }
+    
+    .error-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .error-body {
+        padding: 1.5rem 1rem;
+    }
+    
+    .error-title {
+        font-size: 1.75rem;
+    }
+    
+    .error-subtitle {
+        font-size: 0.95rem;
     }
     
     .error-message {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     
     .error-actions {
@@ -304,15 +297,25 @@ body {
     }
     
     .error-icon {
-        font-size: 3rem;
+        font-size: 2rem;
     }
 }
 
-/* Animações */
-@keyframes fadeInUp {
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
@@ -321,13 +324,16 @@ body {
 }
 
 .error-card {
-    animation: fadeInUp 0.6s ease-out;
+    animation: fadeIn 0.6s ease-out;
 }
 
-/* Loading state para botões */
+.error-header {
+    animation: slideInFromTop 0.5s ease-out;
+}
+
 .btn-error.loading {
     position: relative;
-    color: transparent;
+    color: transparent !important;
 }
 
 .btn-error.loading::after {
@@ -346,32 +352,24 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Efeito de pulso para o fundo */
-@keyframes pulseBackground {
-    0% { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-    50% { background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); }
-    100% { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-}
-
-body {
-    animation: pulseBackground 10s ease-in-out infinite;
-}
-
-/* Efeito de brilho nos cards */
-.error-card {
-    position: relative;
-}
-
 .error-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #ef4444, #dc2626, #ef4444);
-    border-radius: 18px;
-    z-index: -1;
-    opacity: 0.7;
-    filter: blur(10px);
+    display: none;
+}
+
+.btn-error i {
+    font-size: 0.9rem;
+}
+
+.error-message {
+    font-size: 1.05rem;
+    color: var(--text-dark);
+    opacity: 0.8;
+}
+
+.error-body > * {
+    margin-bottom: 1.5rem;
+}
+
+.error-body > *:last-child {
+    margin-bottom: 0;
 }

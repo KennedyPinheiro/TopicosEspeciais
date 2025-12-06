@@ -210,7 +210,7 @@ switch ($clean_path) {
         break;
 
     default:
-        header('Location: /erro/404');
+        header('Location: /src/views/erros/404');
         exit;
 }
 

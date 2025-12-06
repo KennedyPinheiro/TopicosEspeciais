@@ -1,5 +1,4 @@
 <?php
-// Este componente recebe $produto do controller
 ?>
 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
     <div class="card product-card border-0 shadow-sm h-100">
@@ -38,7 +37,7 @@
 
                 <div class="d-flex gap-2">
                     <div class="d-flex gap-2 mt-2">
-                        <a href="/produtos/editar?id=<?php echo $produto['id']; ?>"
+                        <a href="/produtos/editar?id=<?php echo $produto['encrypted_id']; ?>"
                             class="btn btn-outline-primary btn-sm flex-fill">
                             <span class="iconify" data-icon="mdi:pencil" data-width="16" data-height="16"></span>
                             Editar
@@ -46,7 +45,7 @@
 
                         <?php if ($produto['quantidade'] > 0): ?>
                             <button type="button" class="btn btn-success btn-sm flex-fill"
-                                data-bs-toggle="modal" data-bs-target="#vendaModal<?= $produto['id'] ?>">
+                                data-bs-toggle="modal" data-bs-target="#vendaModal<?= $produto['encrypted_id'] ?>">
                                 <span class="iconify" data-icon="mdi:cart" data-width="16" data-height="16"></span>
                                 Vender
                             </button>

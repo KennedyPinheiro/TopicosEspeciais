@@ -59,7 +59,7 @@ $currentPage = $currentPage ?? 'home';
                     <span class="iconify" data-icon="mdi:account-cog" data-width="18" data-height="18"></span>
                     Meu Perfil
                 </a>
-                <a href="/contato" class="dropdown-item <?php echo $currentPage === 'contato' ? 'nav-active' : ''; ?>">
+                <a href="/contato" class="dropdown-item <?php echo $currentPage === 'contato' ? 'dropdown-active' : ''; ?>">
                     <span class="iconify" data-icon="mdi:email" data-width="18" data-height="18"></span>
                     <span>Contato</span>
                 </a>
@@ -106,6 +106,25 @@ $currentPage = $currentPage ?? 'home';
 </nav>
 
 <style>
+    :root {
+        --primary-dark: #0f172a;
+        --primary-medium: #1e293b;
+        --primary-light: #334155;
+        --accent-color: #3b82f6;
+        --accent-hover: #2563eb;
+        --text-light: #f8fafc;
+        --text-muted: #94a3b8;
+        --shadow-dark: 0 4px 12px rgba(2, 6, 23, 0.3);
+        --shadow-light: 0 2px 8px rgba(2, 6, 23, 0.15);
+        --success-color: #10b981;
+        --danger-color: #ef4444;
+        --warning-color: #f59e0b;
+        --purple-color: #8b5cf6;
+        --sidebar-width: 320px;
+        --border-radius: 12px;
+        --transition: all 0.3s ease;
+    }
+
     .custom-navbar {
         display: flex;
         align-items: center;
@@ -217,7 +236,6 @@ $currentPage = $currentPage ?? 'home';
     .profile-btn:hover {
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-1px);
     }
 
     .profile-avatar {
@@ -232,7 +250,7 @@ $currentPage = $currentPage ?? 'home';
     }
 
     .dropdown-arrow {
-        transition: transform 0.5s ease;
+        transition: transform 0.3s ease;
         color: var(--text-muted);
     }
 
@@ -241,7 +259,6 @@ $currentPage = $currentPage ?? 'home';
     }
 
     .dropdown-content {
-        display: none;
         position: absolute;
         top: 100%;
         right: 0;
@@ -254,34 +271,18 @@ $currentPage = $currentPage ?? 'home';
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: 0.5rem;
+
+        /* Estado inicial */
         opacity: 0;
+        visibility: hidden;
         transform: translateY(-10px);
         transition: all 0.3s ease;
-        transition-delay: 0.1s;
     }
 
     .profile-dropdown:hover .dropdown-content {
-        display: block;
         opacity: 1;
+        visibility: visible;
         transform: translateY(0);
-    }
-
-    .profile-dropdown .dropdown-content {
-        pointer-events: none;
-        transition: opacity 0.3s ease 0.5s, transform 0.3s ease 0.5s;
-    }
-
-    .profile-dropdown:hover .dropdown-content {
-        pointer-events: auto;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .profile-dropdown .dropdown-content {
-        transition-delay: 1s;
-    }
-
-    .profile-dropdown:hover .dropdown-content {
-        transition-delay: 0s;
     }
 
     .dropdown-header {
@@ -294,13 +295,6 @@ $currentPage = $currentPage ?? 'home';
         font-weight: 600;
         font-size: 0.95rem;
         color: var(--text-light);
-    }
-
-    .user-role {
-        display: block;
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin-top: 0.25rem;
     }
 
     .dropdown-divider {
@@ -316,12 +310,13 @@ $currentPage = $currentPage ?? 'home';
         padding: 0.75rem 1.25rem;
         color: var(--text-muted);
         text-decoration: none;
-        transition: all 0.5s ease;
+        transition: all 0.2s ease;
         font-size: 0.9rem;
         border: none;
         background: none;
         width: 100%;
         text-align: left;
+        cursor: pointer;
     }
 
     .dropdown-item:hover {
@@ -443,68 +438,32 @@ $currentPage = $currentPage ?? 'home';
     (function() {
         const btn = document.querySelector('.nav-toggle');
         const menu = document.getElementById('nav-menu');
-        if (!btn || !menu) return;
 
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const open = menu.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open);
-            btn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
-        });
-
-        menu.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && menu.classList.contains('open')) {
-                menu.classList.remove('open');
-                btn.setAttribute('aria-expanded', 'false');
-                btn.setAttribute('aria-label', 'Abrir menu');
-            }
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!menu.contains(e.target) && !btn.contains(e.target) && menu.classList.contains('open')) {
-                menu.classList.remove('open');
-                btn.setAttribute('aria-expanded', 'false');
-                btn.setAttribute('aria-label', 'Abrir menu');
-            }
-        });
-
-        const profileDropdown = document.querySelector('.profile-dropdown');
-        const dropdownContent = document.querySelector('.dropdown-content');
-        let dropdownTimeout;
-
-        if (profileDropdown && dropdownContent) {
-            profileDropdown.addEventListener('mouseenter', function() {
-                clearTimeout(dropdownTimeout);
-                dropdownContent.style.display = 'block';
-                setTimeout(() => {
-                    dropdownContent.style.opacity = '1';
-                    dropdownContent.style.transform = 'translateY(0)';
-                }, 10);
+        if (btn && menu) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const open = menu.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open);
+                btn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
             });
 
-            profileDropdown.addEventListener('mouseleave', function() {
-                dropdownTimeout = setTimeout(() => {
-                    dropdownContent.style.opacity = '0';
-                    dropdownContent.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        dropdownContent.style.display = 'none';
-                    }, 300);
-                }, 1000);
+            menu.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' && menu.classList.contains('open')) {
+                    menu.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.setAttribute('aria-label', 'Abrir menu');
+                }
             });
 
-            dropdownContent.addEventListener('mouseenter', function() {
-                clearTimeout(dropdownTimeout);
-            });
-
-            dropdownContent.addEventListener('mouseleave', function() {
-                dropdownTimeout = setTimeout(() => {
-                    dropdownContent.style.opacity = '0';
-                    dropdownContent.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        dropdownContent.style.display = 'none';
-                    }, 300);
-                }, 1000);
+            document.addEventListener('click', function(e) {
+                if (!menu.contains(e.target) && !btn.contains(e.target) && menu.classList.contains('open')) {
+                    menu.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.setAttribute('aria-label', 'Abrir menu');
+                }
             });
         }
+
+
     })();
 </script>

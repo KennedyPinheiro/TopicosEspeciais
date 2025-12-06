@@ -58,7 +58,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Adicionar loading state nos botões
         document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.btn-error');
             buttons.forEach(button => {
