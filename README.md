@@ -54,15 +54,4 @@ Se quiser remover volumes (limpar banco de dados):
 
 docker compose down -v
 
-📂 Estrutura do projeto
-
-/
-├── frontend/
-│   ├── Dockerfile
-│   └── ...
-├── backend/
-│   ├── Dockerfile
-│   └── ...
-├── docker-compose.yml
-└── README.md
 
