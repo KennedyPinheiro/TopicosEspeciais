@@ -1,75 +1,118 @@
-📦 Projeto — Nome do Projeto
+# 📦 Projeto — IF Vendas
 
-Um ambiente completo para desenvolvimento utilizando PHP, MySQL, Node.js, NVM e Docker Compose, com frontend em Node/Vite e backend em PHP/Apache.
-✅ Pré-requisitos
+Ambiente completo para desenvolvimento utilizando **PHP + Laravel**, **MySQL**, **Node.js/Vite**, **Docker** e **Docker Compose**.  
+Frontend em **React + Vite**, backend em **Laravel (PHP)** rodando em containers isolados.
+
+---
+
+# ✅ Pré-requisitos
 
 Antes de rodar o projeto, instale:
-🔹 Git
 
+### 🔹 Git
+```bash
 sudo apt install git -y
+```
 
-🔹 Docker
-
+### 🔹 Docker
+```bash
 sudo apt install docker.io -y
+```
 
-🔹 Docker Compose (plugin)
-
+### 🔹 Docker Compose (plugin)
+```bash
 sudo apt install docker-compose-plugin -y
+```
 
-🔹 Node.js (via NVM)
-
-Recomendado apenas se você quiser rodar o frontend fora do Docker.
-
-Instalar NVM:
-
+### 🔹 Node.js (via NVM)
+```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-Recarregar shell:
-
 source ~/.nvm/nvm.sh
-
-Instalar versão recomendada:
-
 nvm install 18
+```
 
-    O Docker já fornece Node dentro do container, então instalar NVM é opcional.
+### 🔹 PHP
+```bash
+sudo apt install php8.2 php8.2-mysql php8.2-curl php8.2-gd php8.2-mbstring php8.2-xml php8.2-zip -y
+```
+## 🚀 Como rodar o projeto
 
-🔹 PHP
-
-Também opcional, pois o backend roda dentro do Docker.
-🚀 Como rodar o projeto
 1️⃣ Clone o repositório
+```bash
+git clone https://github.com/KennedyPinheiro/TopicosEspeciais.git
+cd TopicosEspeciais
+```
 
-git clone https://github.com/SEU-USUARIO/SEU-REPO.git
-cd SEU-REPO
+### 🐳 Rodando com Docker (Recomendado)
 
-🐳 Rodando com Docker (Recomendado)
 2️⃣ Suba os containers
-
+```bash
 docker compose up -d --build
+```
 
 3️⃣ Acesse os serviços
-Serviço	URL
+Serviço	URL 
+
 🌐 Frontend (Vite)	http://localhost:5173
+
 🧩 Backend (PHP/Apache)	http://localhost:8080
+
 🗄️ MySQL	host: localhost – porta: 3306
-🗂️ Estrutura do projeto
 
-/frontend
-/backend
-docker-compose.yml
-docker/
- ├─ php/
- │   └─ Dockerfile
- ├─ node/
- │   └─ Dockerfile
- └─ mysql/
-     └─ data/   (IGNORADA pelo Git)
 
-📄 .gitignore
+## 🔧 Como executar o backend (Laravel) dentro do Docker
 
-Certifique-se de que existe um .gitignore na raiz contendo:
+👉 Entrar no container do backend
+```bash
+docker exec -it ivendas-backend bash
+```
 
+👉 Executar migrations
+```bash
+php artisan migrate
+```
+
+👉 Se precisar limpar cache do Laravel
+```bash
+php artisan optimize:clear
+```
+
+👉 Instalar dependências do Laravel (caso necessário)
+```bash
+composer install
+```
+
+👉 Rodar seeders
+```bash
+php artisan db:seed
+```
+
+
+Importante: O Laravel só enxerga o MySQL quando rodado dentro do container.
+
+## 🗂️ Estrutura do projeto
+
+### /frontend
+
+### /backend
+
+###  docker-compose.yml
+
+###  docker/ 
+
+### ├─ php/
+
+### │   └─ Dockerfile
+
+### ├─ node/
+
+### │   └─ Dockerfile
+
+###  └─ mysql/
+
+
+## .gitignore recomendado
+```bash
 # Logs
 *.log
 npm-debug.log*
@@ -90,7 +133,9 @@ docker/mysql/data/
 .env
 .env.local
 
-🛠️ Comandos úteis
+```
+
+## 🛠️ Comandos úteis
 Ver containers:
 
 docker compose ps
@@ -106,3 +151,6 @@ docker compose down
 Derrubar e apagar volume do MySQL:
 
 docker compose down -v
+
+
+
