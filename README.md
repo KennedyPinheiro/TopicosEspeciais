@@ -109,16 +109,15 @@ npm run dev -- --host
 ## 🗂️ Estrutura do projeto
 
 ### TopicosEspeciais/
-### ├── backend/         
-### ├── frontend/        
-### ├── docker/           
-### │   ├── php/
-### │   │   ├── Dockerfile
-### │   │   └── vhost.conf
-### │   └── node/
-### │       └── Dockerfile
-### ├── docker-compose.yml
-### └── README.md
+#### ├── backend/         
+#### ├── frontend/        
+#### ├── docker/           
+#### │   ├── php/
+#### │   │   ├── Dockerfile
+#### │   │   └── vhost.conf
+#### │   └── node/
+#### │       └── Dockerfile
+#### └── README.md
 
 
 ## .gitignore recomendado
