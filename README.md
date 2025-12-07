@@ -60,33 +60,46 @@ Serviço	URL
 🗄️ MySQL	host: localhost – porta: 3306
 
 
-## 🔧 Como executar o backend (Laravel) dentro do Docker
+##  Inicializando o backend (Laravel)
 
-👉 Entrar no container do backend
+Entrar no container do backend
 ```bash
 docker exec -it ivendas-backend bash
 ```
+1. Copiar ambiente
+```bash
+cp .env.example .env
+```
 
-👉 Executar migrations
+2 Instalar dependências do Laravel
+```bash
+composer install
+```
+ 3. Gerar APP_KEY
+```bash
+php artisan key:generate
+```
+
+4. Permissões necessárias
+```bash
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+```
+
+5. Executar migrations
 ```bash
 php artisan migrate
 ```
 
-👉 Se precisar limpar cache do Laravel
-```bash
-php artisan optimize:clear
-```
-
-👉 Instalar dependências do Laravel (caso necessário)
-```bash
-composer install
-```
-
-👉 Rodar seeders
+Rodar seeders
 ```bash
 php artisan db:seed
 ```
 
+ Se precisar limpar cache do Laravel
+```bash
+php artisan optimize:clear
+```
 
 Importante: O Laravel só enxerga o MySQL quando rodado dentro do container.
 
