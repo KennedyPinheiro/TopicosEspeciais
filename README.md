@@ -1,8 +1,16 @@
-# 📦 Projeto — IF Vendas
+# F Vendas — Ambiente Completo com Docker
 
-Ambiente completo para desenvolvimento utilizando **PHP + Laravel**, **MySQL**, **Node.js/Vite**, **Docker** e **Docker Compose**.  
-Frontend em **React + Vite**, backend em **Laravel (PHP)** rodando em containers isolados.
+Ambiente de desenvolvimento utilizando:
 
+    Laravel 10 (PHP 8.2 + Apache)
+
+    MySQL 8
+
+    React + Vite (Node 22)
+
+    Docker + Docker Compose
+
+O projeto roda inteiramente em containers — sem precisar instalar PHP ou Node na sua máquina.
 ---
 
 # ✅ Pré-requisitos
