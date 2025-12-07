@@ -1,4 +1,4 @@
-# F Vendas — Ambiente Completo com Docker
+# IF Vendas — Ambiente Completo com Docker
 
 Ambiente de desenvolvimento utilizando:
 
@@ -13,7 +13,7 @@ Ambiente de desenvolvimento utilizando:
 O projeto roda inteiramente em containers — sem precisar instalar PHP ou Node na sua máquina.
 ---
 
-# ✅ Pré-requisitos
+#  Pré-requisitos
 
 Antes de rodar o projeto, instale:
 
@@ -27,22 +27,11 @@ sudo apt install git -y
 sudo apt install docker.io -y
 ```
 
-### 🔹 Docker Compose (plugin)
+### 🔹 Docker Compose plugin
 ```bash
 sudo apt install docker-compose-plugin -y
 ```
 
-### 🔹 Node.js (via NVM)
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-source ~/.nvm/nvm.sh
-nvm install 18
-```
-
-### 🔹 PHP
-```bash
-sudo apt install php8.2 php8.2-mysql php8.2-curl php8.2-gd php8.2-mbstring php8.2-xml php8.2-zip -y
-```
 ## 🚀 Como rodar o projeto
 
 1️⃣ Clone o repositório
@@ -51,44 +40,36 @@ git clone https://github.com/KennedyPinheiro/TopicosEspeciais.git
 cd TopicosEspeciais
 ```
 
-### 🐳 Rodando com Docker (Recomendado)
+###  Rodando com Docker (Recomendado)
 
 2️⃣ Suba os containers
 ```bash
 docker compose up -d --build
 ```
 
-3️⃣ Acesse os serviços
-Serviço	URL 
 
-🌐 Frontend (Vite)	http://localhost:5173
-
-🧩 Backend (PHP/Apache)	http://localhost:8080
-
-🗄️ MySQL	host: localhost – porta: 3306
-
-
-##  Inicializando o backend (Laravel)
+## Configuração do Backend
 
 Entrar no container do backend
 ```bash
 docker exec -it ivendas-backend bash
 ```
-1. Copiar ambiente
+1. Criar arquivo de ambiente
 ```bash
 cp .env.example .env
 ```
 
-2 Instalar dependências do Laravel
+2. Instalar dependências
 ```bash
 composer install
 ```
- 3. Gerar APP_KEY
+
+3. Gerar APP_KEY
 ```bash
 php artisan key:generate
 ```
 
-4. Permissões necessárias
+4. Ajustar permissões
 ```bash
 chmod -R 775 storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
@@ -99,37 +80,45 @@ chown -R www-data:www-data storage bootstrap/cache
 php artisan migrate
 ```
 
-Rodar seeders
+6. Executar seeders
 ```bash
 php artisan db:seed
 ```
 
- Se precisar limpar cache do Laravel
+7. Limpar caches do Laravel
 ```bash
 php artisan optimize:clear
 ```
-
 Importante: O Laravel só enxerga o MySQL quando rodado dentro do container.
+
+## Frontend (React + Vite)
+
+O container já roda automaticamente o Vite:
+➡ http://localhost:5173
+
+```bash
+docker exec -it ivendas-frontend bash
+```
+
+Rodar manualmente
+```bash
+npm run dev -- --host
+```
+
 
 ## 🗂️ Estrutura do projeto
 
-### /frontend
-
-### /backend
-
-###  docker-compose.yml
-
-###  docker/ 
-
-### ├─ php/
-
-### │   └─ Dockerfile
-
-### ├─ node/
-
-### │   └─ Dockerfile
-
-###  └─ mysql/
+### TopicosEspeciais/
+### ├── backend/         
+### ├── frontend/        
+### ├── docker/           
+### │   ├── php/
+### │   │   ├── Dockerfile
+### │   │   └── vhost.conf
+### │   └── node/
+### │       └── Dockerfile
+### ├── docker-compose.yml
+### └── README.md
 
 
 ## .gitignore recomendado
@@ -157,19 +146,22 @@ docker/mysql/data/
 ```
 
 ## 🛠️ Comandos úteis
-Ver containers:
+
+### Ver containers:
 
 docker compose ps
 
-Ver logs:
+### Ver logs:
 
 docker compose logs -f frontend
 
-Derrubar tudo:
+docker compose logs -f backend
+
+### Derrubar tudo:
 
 docker compose down
 
-Derrubar e apagar volume do MySQL:
+### Derrubar e apagar volume do MySQL:
 
 docker compose down -v
 
