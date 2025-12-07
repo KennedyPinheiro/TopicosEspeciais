@@ -1,68 +1,108 @@
- README.md — Como rodar o projeto com Docker
-🚀 Pré-requisitos
+📦 Projeto — Nome do Projeto
 
-Antes de iniciar, você precisa ter instalado na máquina:
+Um ambiente completo para desenvolvimento utilizando PHP, MySQL, Node.js, NVM e Docker Compose, com frontend em Node/Vite e backend em PHP/Apache.
+✅ Pré-requisitos
 
-    Docker
+Antes de rodar o projeto, instale:
+🔹 Git
 
-    Docker Compose
+sudo apt install git -y
 
-🐳 Subindo o projeto com Docker
-1. Clonar o repositório
+🔹 Docker
 
-git clonehttps://github.com/KennedyPinheiro/TopicosEspeciais.git
-cd TopicosEspeciais
+sudo apt install docker.io -y
 
-🧱 2. Build das imagens
+🔹 Docker Compose (plugin)
 
-Este comando constrói todas as imagens do projeto (frontend, backend e banco).
+sudo apt install docker-compose-plugin -y
 
-docker compose build --no-cache
+🔹 Node.js (via NVM)
 
-▶️ 3. Iniciar os containers
+Recomendado apenas se você quiser rodar o frontend fora do Docker.
 
-Para subir tudo em modo detached (em segundo plano):
+Instalar NVM:
 
-docker compose up -d
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
-🔍 4. Acessar os serviços
-🌐 Frontend (Vite + React)
+Recarregar shell:
 
-http://localhost:5173
+source ~/.nvm/nvm.sh
 
-🖥️ Backend (PHP/Apache)
+Instalar versão recomendada:
 
-http://localhost:8080
+nvm install 18
 
-🗄️ MySQL
+    O Docker já fornece Node dentro do container, então instalar NVM é opcional.
 
-    Host: localhost
+🔹 PHP
 
-    Porta: 3307
+Também opcional, pois o backend roda dentro do Docker.
+🚀 Como rodar o projeto
+1️⃣ Clone o repositório
 
-    Usuário: ivendas
+git clone https://github.com/SEU-USUARIO/SEU-REPO.git
+cd SEU-REPO
 
-    Senha: ivendas
+🐳 Rodando com Docker (Recomendado)
+2️⃣ Suba os containers
 
-    Banco: ivendas
+docker compose up -d --build
 
-🛑 Parar containers
+3️⃣ Acesse os serviços
+Serviço	URL
+🌐 Frontend (Vite)	http://localhost:5173
+🧩 Backend (PHP/Apache)	http://localhost:8080
+🗄️ MySQL	host: localhost – porta: 3306
+🗂️ Estrutura do projeto
+
+/frontend
+/backend
+docker-compose.yml
+docker/
+ ├─ php/
+ │   └─ Dockerfile
+ ├─ node/
+ │   └─ Dockerfile
+ └─ mysql/
+     └─ data/   (IGNORADA pelo Git)
+
+📄 .gitignore
+
+Certifique-se de que existe um .gitignore na raiz contendo:
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# PHP vendor
+backend/vendor/
+
+# Docker MySQL
+docker/mysql/data/
+
+# Environment
+.env
+.env.local
+
+🛠️ Comandos úteis
+Ver containers:
+
+docker compose ps
+
+Ver logs:
+
+docker compose logs -f frontend
+
+Derrubar tudo:
 
 docker compose down
 
-Se quiser remover volumes (limpar banco de dados):
+Derrubar e apagar volume do MySQL:
 
 docker compose down -v
-
-📂 Estrutura do projeto
-
-/
-├── frontend/
-│   ├── Dockerfile
-│   └── ...
-├── backend/
-│   ├── Dockerfile
-│   └── ...
-├── docker-compose.yml
-└── README.md
-
