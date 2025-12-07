@@ -107,7 +107,7 @@ npm run dev -- --host
 
 
 ## 🗂️ Estrutura do projeto
-
+```bash
 ### TopicosEspeciais/
 #### ├── backend/         
 #### ├── frontend/        
@@ -118,7 +118,7 @@ npm run dev -- --host
 #### │   └── node/
 #### │       └── Dockerfile
 #### └── README.md
-
+```
 
 ## .gitignore recomendado
 ```bash
