@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,14 +15,12 @@ return new class extends Migration
                   ->constrained()
                   ->cascadeOnDelete();
 
-            // Coluna tipo_pessoa já incluída na criação
             $table->enum('tipo_pessoa', ['PF', 'PJ'])->default('PF');
             
             $table->string('telefone')->nullable();
             $table->date('data_nascimento')->nullable();
             $table->json('imagem')->nullable();
             
-            // Campos para documentos
             $table->string('cpf', 11)->nullable();
             $table->string('cnpj', 14)->nullable();
             $table->string('razao_social')->nullable();
