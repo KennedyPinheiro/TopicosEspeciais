@@ -10,19 +10,7 @@ class PessoaSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::where('email', 'admin@ivendas.com')->first();
-        Pessoa::firstOrCreate(
-            ['user_id' => $admin->id],
-            [
-                'tipo' => 'FISICA',
-                'cpf' => '12345678901',
-                'rg' => 'MG1234567',
-                'telefone' => '(11) 9999-8888',
-                'celular' => '(11) 98888-7777',
-                'data_nascimento' => '1980-05-15',
-            ]
-        );
-
+        
         $funcionarios = [
             'joao@ivendas.com' => [
                 'tipo' => 'FISICA',

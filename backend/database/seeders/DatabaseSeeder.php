@@ -9,18 +9,20 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-   
+
     public function run(): void
     {
         $this->call([
+
             RoleSeeder::class,
             UserSeeder::class,
             PessoaSeeder::class,
+            AdminSeeder::class,
             UserRoleSeeder::class,
             ClienteDetalheSeeder::class,
             FornecedorDetalheSeeder::class,
             FuncionarioDetalheSeeder::class,
-            ClienteSeeder::class,       
+            ClienteSeeder::class,
             EnderecoSeeder::class,
         ]);
     }

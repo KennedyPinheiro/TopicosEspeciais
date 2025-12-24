@@ -16,6 +16,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+         'role',          
+        'primeiro_acesso'
     ];
 
     protected $hidden = [
@@ -28,6 +30,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'primeiro_acesso' => 'boolean',
+            'senha_alterada_em' => 'datetime',
         ];
     }
 
@@ -146,5 +150,15 @@ class User extends Authenticatable
             ->ativos()
             ->pluck('role')
             ->toArray();
+    }
+      public function getJWTCustomClaims()
+    {
+        return [
+            'user_id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'role_name' => $this->role->name ?? null,
+            'roles' => $this->getRolesAtivos(),
+        ];
     }
 }
