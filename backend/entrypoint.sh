@@ -1,15 +1,24 @@
-#!/bin/bash
+#!/bin/sh
 
+echo "Inicializando backend Laravel..."
 
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+mkdir -p storage/framework/cache \
+         storage/framework/sessions \
+         storage/framework/views \
+         storage/logs
+
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 if [ ! -f .env ]; then
     cp .env.example .env
 fi
 
-if ! grep -q "APP_KEY=base64" .env; then
-    php artisan key:generate
+php artisan key:generate --force || true
+
+if [ ! -d vendor ]; then
+    composer install --no-interaction --prefer-dist || true
 fi
 
+echo "Subindo Apache..."
 exec apache2-foreground

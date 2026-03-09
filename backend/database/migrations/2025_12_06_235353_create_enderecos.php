@@ -10,19 +10,24 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('enderecos', function (Blueprint $table) {
-            $table->id();
-            $table->string('logradouro')->nullable();
-            $table->string('numero')->nullable();
-            $table->string('bairro')->nullable();
-            $table->string('cep')->nullable();
-            $table->string('cidade')->nullable();
-            $table->string('estado')->nullable();
-            $table->string('complemento')->nullable();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('enderecos', function (Blueprint $table) {
+    $table->id();
+
+    $table->morphs('enderecavel');
+
+    $table->string('logradouro')->nullable();
+    $table->string('numero')->nullable();
+    $table->string('bairro')->nullable();
+    $table->string('cep')->nullable();
+    $table->string('cidade')->nullable();
+    $table->string('estado')->nullable();
+    $table->string('complemento')->nullable();
+
+    $table->timestamps();
+});
+}
+
 
     /**
      * Reverse the migrations.
